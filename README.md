@@ -1,2 +1,2 @@
 # SyndicPro
-un site web de syndic qui permet d'organiser et de 'observer toutes les problemes les factures etc ...
+un site web de syndic qui permet d'organiser et d'observer toutes les problemes les factures etc ... d'une residence
