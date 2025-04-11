@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Signup</title>
+    <link rel="stylesheet" href="signup.css">
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="signup-box">
+            <h2>Sign Up</h2>
+            <form id="signupForm">
+                <div class="input-box">
+                    <input type="text" id="username" required>
+                    <label>Username</label>
+                </div>
+                <div class="input-box">
+                    <input type="email" id="email" required>
+                    <label>Email</label>
+                </div>
+                <div class="input-box">
+                    <input type="password" id="password" required>
+                    <label>Password</label>
+                </div>
+                <div class="input-box">
+                    <input type="password" id="confirmPassword" required>
+                    <label>Confirm Password</label>
+                </div>
+                <div id="message" class="message"></div>
+                <button type="submit" class="btn">Sign Up</button>
+                <div class="login-link">
+                    <p>Already have an account? <a href="index.html">Login</a></p>
+                </div>
+            </form>
+       
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const messageEl = document.getElementById('message');
+            
+            if (email === 'allouch@gmail.com' && password === '123456') {
+                messageEl.textContent = 'Signup successful!';
+                messageEl.style.color = '#0ef';
+                // Redirect to login page after 2 seconds
+                setTimeout(function() {
+                    window.location.href = 'index.html';
+                }, 3000);
+            } else {
+                messageEl.textContent = 'Demo only works with email: allouch@gmail.com and password: 123456';
+                messageEl.style.color = '#ff3333';
+            }
+        });
+    </script>
+</body>
+
+</html>
