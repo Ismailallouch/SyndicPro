@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestion des Copropriétaires - SyndicPro</title>
+  <link rel="icon" href="favicon.png" type="favicon.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #2a5298;
+      --primary-light: #3a67b6;
+      --primary-dark: #1c3c76;
+      --accent-color: #00c6ff;
+      --secondary-color: #4CAF50;
+      --warning-color: #FFC107;
+      --danger-color: #F44336;
+      --text-color: #333;
+      --text-light: #666;
+      --text-muted: #999;
+      --background-color: #f4f7fa;
+      --background-light: #ffffff;
+      --border-color: #e1e5eb;
+      --transition: all 0.4s ease;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    body {
+      background-color: var(--background-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+    }
+    
+    /* Sidebar styles */
+    .sidebar {
+      width: 260px;
+      height: 100vh;
+      background-color: var(--background-light);
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      border-radius: 10px;
+      margin-right: 12px;
+    }
+    
+    .logo-icon {
+      font-size: 20px;
+      color: white;
+    }
+    
+    .brand-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+    
+    .brand-name span {
+      color: var(--accent-color);
+    }
+    
+    .sidebar-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 0;
+    }
+    
+    .menu-label {
+      text-transform: uppercase;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding: 10px 20px;
+      margin-top: 15px;
+    }
+    
+    .menu-items {
+      list-style: none;
+    }
+    
+    .menu-item {
+      margin-bottom: 5px;
+    }
+    
+    .menu-link {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: var(--text-color);
+      text-decoration: none;
+      transition: var(--transition);
+      border-left: 3px solid transparent;
+    }
+    
+    .menu-link:hover {
+      background-color: rgba(42, 82, 152, 0.05);
+    }
+    
+    .menu-link.active {
+      border-left-color: var(--primary-color);
+      background-color: rgba(42, 82, 152, 0.08);
+      color: var(--primary-color);
+    }
+    
+    .menu-icon {
+      font-size: 18px;
+      margin-right: 12px;
+      width: 24px;
+      text-align: center;
+    }
+    
+    .sidebar-footer {
+      padding: 15px 20px;
+      border-top: 1px solid var(--border-color);
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+    }
+    
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #e0e0e0, #c0c0c0);
+      margin-right: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: var(--text-color);
+    }
+    
+    .user-details {
+      flex: 1;
+    }
+    
+    .user-name {
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .user-role {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    
+    .logout-btn {
+      margin-left: 10px;
+      color: var(--text-light);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: var(--transition);
+    }
+    
+    .logout-btn:hover {
+      color: var(--danger-color);
+    }
+    
+    /* Main content styles */
+    .main-content {
+      flex: 1;
+      margin-left: 260px;
+      padding: 20px;
+    }
+    
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    
+    .page-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+    
+    .top-bar-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .search-box {
+      position: relative;
+    }
+    
+    .search-input {
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 8px 15px 8px 35px;
+      background-color: var(--background-light);
+      font-size: 14px;
+      outline: none;
+      transition: var(--transition);
+      width: 240px;
+    }
+    
+    .search-input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+    }
+    
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+    
+    .notification-btn {
+      position: relative;
+      background: none;
+      border: none;
+      color: var(--text-light);
+      font-size: 20px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .notification-btn:hover {
+      color: var(--primary-color);
+    }
+    
+    .notification-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      width: 16px;
+      height: 16px;
+      background-color: var(--danger-color);
+      border-radius: 50%;
+      color: white;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* Copro content specific */
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .btn {
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+    }
+    
+    .btn-outline {
+      background-color: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+    }
+    
+    .btn-outline:hover {
+      background-color: var(--background-color);
+    }
+    
+    .card {
+      background-color: var(--background-light);
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      margin-bottom: 30px;
+      overflow: hidden;
+    }
+    
+    .card-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+    
+    .card-body {
+      padding: 20px;
+    }
+    
+    .coproprietaires-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .coproprietaires-table th,
+    .coproprietaires-table td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .coproprietaires-table th {
+      font-weight: 500;
+      color: var(--text-light);
+      font-size: 14px;
+    }
+    
+    .coproprietaires-table td {
+      font-size: 14px;
+    }
+    
+    .coproprietaires-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .coproprietaires-table tr:hover {
+      background-color: rgba(244, 247, 250, 0.5);
+    }
+    
+    .action-cell {
+      text-align: right;
+    }
+    
+    .action-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      color: var(--text-light);
+      transition: var(--transition);
+      background-color: transparent;
+    }
+    
+    .action-btn:hover {
+      background-color: var(--background-color);
+      color: var(--primary-color);
+    }
+    
+    .action-btn.edit:hover {
+      color: var(--primary-color);
+    }
+    
+    .action-btn.delete:hover {
+      color: var(--danger-color);
+    }
+    
+    /* Modal styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition);
+    }
+    
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .modal {
+      background-color: var(--background-light);
+      border-radius: 12px;
+      width: 500px;
+      max-width: 90%;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transform: translateY(-20px);
+      transition: var(--transition);
+    }
+    
+    .modal-overlay.active .modal {
+      transform: translateY(0);
+    }
+    
+    .modal-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    
+    .modal-body {
+      padding: 20px;
+    }
+    
+    .modal-footer {
+      border-top: 1px solid var(--border-color);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-color);
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 14px;
+      transition: var(--transition);
+    }
+    
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+    }
+    
+    .form-text {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 5px;
+    }
+    
+    .avatar-container {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--background-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+    
+    .table-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: var(--primary-light);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      margin-right: 10px;
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .badge-primary {
+      background-color: rgba(42, 82, 152, 0.1);
+      color: var(--primary-color);
+    }
+    
+    /* Responsive styles */
+    @media (max-width: 1024px) {
+      .card-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 70px;
+      }
+      
+      .sidebar-header {
+        justify-content: center;
+        padding: 20px 10px;
+      }
+      
+      .brand-name {
+        display: none;
+      }
+      
+      .logo-container {
+        margin-right: 0;
+      }
+      
+      .menu-label, .menu-text, .user-details {
+        display: none;
+      }
+      
+      .menu-link {
+        justify-content: center;
+        padding: 15px;
+      }
+      
+      .menu-icon {
+        margin-right: 0;
+      }
+      
+      .sidebar-footer {
+        justify-content: center;
+        padding: 15px 10px;
+      }
+      
+      .user-info {
+        justify-content: center;
+      }
+      
+      .user-avatar {
+        margin-right: 0;
+      }
+      
+      .main-content {
+        margin-left: 70px;
+      }
+      
+      .hide-sm {
+        display: none;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+      
+      .top-bar-actions {
+        width: 100%;
+      }
+      
+      .search-box {
+        flex: 1;
+      }
+      
+      .search-input {
+        width: 100%;
+      }
+      
+      .card-stats {
+        grid-template-columns: 1fr;
+      }
+      
+      .hide-xs {
+        display: none;
+      }
+      
+      .action-buttons {
+        margin-top: 10px;
+      }
+    }
+  </style>   
+</head>
+<body>
+  <!-- Sidebar --> 
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-container">
+        <i class="fas fa-city logo-icon"></i>
+      </div>
+      <div class="brand-name">Syndic<span>Pro</span></div>
+    </div>
+    
+    <div class="sidebar-content">
+      <p class="menu-label">Principal</p>
+      <ul class="menu-items">
+        <li class="menu-item">
+          <a href="dashboard.html" class="menu-link">
+            <i class="fas fa-home menu-icon"></i>
+            <span class="menu-text">Dashboard</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="proprietaires.html" class="menu-link active">
+            <i class="fas fa-users menu-icon"></i>
+            <span class="menu-text">Copropriétaires</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="#" class="menu-link">
+            <i class="fas fa-building menu-icon"></i>
+            <span class="menu-text">Lots</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="#" class="menu-link">
+            <i class="fas fa-file-invoice-dollar menu-icon"></i>
+            <span class="menu-text">Charges & Paiements</span>
+          </a>
+        </li>
+      </ul>
+      
+      <p class="menu-label">Gestion</p>
+      <ul class="menu-items">
+        <li class="menu-item">
+          <a href="#" class="menu-link">
+            <i class="fas fa-tools menu-icon"></i>
+            <span class="menu-text">Demandes de maintenance</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="#" class="menu-link">
+            <i class="fas fa-calendar-alt menu-icon"></i>
+            <span class="menu-text">Événements</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="#" class="menu-link">
+            <i class="fas fa-file-alt menu-icon"></i>
+            <span class="menu-text">Documents</span>
+          </a>
+        </li>
+      </ul>
+      
+      <p class="menu-label">Rapports</p>
+      <ul class="menu-items">
+        <li class="menu-item">
+          <a href="#" class="menu-link">
+            <i class="fas fa-chart-pie menu-icon"></i>
+            <span class="menu-text">Statistiques</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="#" class="menu-link">
+            <i class="fas fa-cog menu-icon"></i>
+            <span class="menu-text">Paramètres</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="user-details">
+          <div class="user-name">Ismail Allouch</div>
+          <div class="user-role">Administrateur</div>
+        </div>
+        <button class="logout-btn" title="Déconnexion">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
+      </div>
+    </div>
+  </aside>
+  
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="top-bar">
+      <h1 class="page-title">Gestion des Copropriétaires</h1>
+      
+      <div class="top-bar-actions">
+        <div class="search-box">
+          <input type="text" class="search-input" placeholder="Rechercher un copropriétaire...">
+          <i class="fas fa-search search-icon"></i>
+        </div>
+        
+        <button class="notification-btn">
+          <i class="fas fa-bell"></i>
+          <span class="notification-badge">3</span>
+        </button>
+        
+        <button class="btn btn-primary" id="addCoproBtn">
+          <i class="fas fa-plus"></i> Ajouter un copropriétaire
+        </button>
+      </div>
+    </div>
+    
+    <!-- Copro Management Card -->
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Liste des copropriétaires</h2>
+        <div class="action-buttons">
+          <button class="btn btn-outline">
+            <i class="fas fa-filter"></i> Filtrer
+          </button>
+          <button class="btn btn-outline">
+            <i class="fas fa-file-export"></i> Exporter
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <table class="coproprietaires-table">
+          <thead>
+            <tr>
+              <th>Copropriétaire</th>
+              <th>Email</th>
+              <th class="hide-sm">Téléphone</th>
+              <th>Lot</th>
+              <th class="hide-sm">Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div style="display: flex; align-items: center;">
+                  <div class="table-avatar">MD</div>
+                  Mme Dubois
+                </div>
+              </td>
+              <td>dubois@example.com</td>
+              <td class="hide-sm">06 12 34 56 78</td>
+              <td>Apt 203</td>
+              <td class="hide-sm"><span class="badge badge-primary">Actif</span></td>
+              <td class="action-cell">
+                <button class="action-btn edit" title="Modifier">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="action-btn delete" title="Supprimer">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div style="display: flex; align-items: center;">
+                  <div class="table-avatar">MM</div>
+                  M. Martin
+                </div>
+              </td>
+              <td>martin@example.com</td>
+              <td class="hide-sm">06 23 45 67 89</td>
+              <td>Apt 114</td>
+              <td class="hide-sm"><span class="badge badge-primary">Actif</span></td>
+              <td class="action-cell">
+                <button class="action-btn edit" title="Modifier">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="action-btn delete" title="Supprimer">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div style="display: flex; align-items: center;">
+                  <div class="table-avatar">MA</div>
+                  M. Ahmed
+                </div>
+              </td>
+              <td>ahmed@example.com</td>
+              <td class="hide-sm">06 34 56 78 90</td>
+              <td>Apt 301</td>
+              <td class="hide-sm"><span class="badge badge-primary">Actif</span></td>
+              <td class="action-cell">
+                <button class="action-btn edit" title="Modifier">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="action-btn delete" title="Supprimer">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div style="display: flex; align-items: center;">
+                  <div class="table-avatar">MG</div>
+                  M. Garcia
+                </div>
+              </td>
+              <td>garcia@example.com</td>
+              <td class="hide-sm">06 45 67 89 01</td>
+              <td>Apt 107</td>
+              <td class="hide-sm"><span class="badge badge-primary">Actif</span></td>
+              <td class="action-cell">
+                <button class="action-btn edit" title="Modifier">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="action-btn delete" title="Supprimer">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div style="display: flex; align-items: center;">
+                  <div class="table-avatar">ML</div>
+                  Mme Leroy
+                </div>
+              </td>
+              <td>leroy@example.com</td>
+              <td class="hide-sm">06 56 78 90 12</td>
+              <td>Apt 205</td>
+              <td class="hide-sm"><span class="badge badge-primary">Actif</span></td>
+              <td class="action-cell">
+                <button class="action-btn edit" title="Modifier">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="action-btn delete" title="Supprimer">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+  
+  <!-- Add/Edit Copropriétaire Modal -->
+  <div class="modal-overlay" id="coproModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Ajouter un copropriétaire</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="coproForm">
+          <div class="form-group">
+            <label for="nom" class="form-label">Nom</label>
+            <input type="text" id="nom" class="form-control" placeholder="Nom du copropriétaire">
+          </div>
+          <div class="form-group">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" id="email" class="form-control" placeholder="email@exemple.com">
+          </div>
+          <div class="form-group">
+            <label for="telephone" class="form-label">Téléphone</label>
+            <input type="tel" id="telephone" class="form-control" placeholder="06 xx xx xx xx">
+          </div>
+          <div class="form-group">
+            <label for="lot" class="form-label">Lot</label>
+            <input type="text" id="lot" class="form-control" placeholder="Numéro du lot ou appartement">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline modal-close-btn">Annuler</button>
+        <button class="btn btn-primary" id="saveCoproBtn">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-overlay" id="deleteModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Confirmer la suppression</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Êtes-vous sûr de vouloir supprimer ce copropriétaire ? Cette action est irréversible.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline modal-close-btn">Annuler</button>
+        <button class="btn btn-primary" style="background-color: var(--danger-color);">Supprimer</button>
+      </div>
+    </div>
+  </div>
+  <!--le script pour assurer les fonctionnalite (supp, add etc .. )j'ai utiliser  -->
+  <script>
+    // Fonctions utilitaires
+    function getInitials(nom) {
+        return nom.split(' ').map(part => part[0]).join('').toUpperCase();
+    }
+
+    function generateId() {
+        const copros = getCoproprietairesFromStorage();
+        return copros.length > 0 ? Math.max(...copros.map(c => c.id)) + 1 : 1;
+    }
+
+    // Gestion du localStorage
+    function getCoproprietairesFromStorage() {
+        const saved = localStorage.getItem('coproprietaires');
+        if (saved) {
+            return JSON.parse(saved);
+        } else {
+            // Données par défaut
+            const defaultData = [
+                { id: 1, nom: "Mme Dubois", email: "dubois@example.com", telephone: "06 12 34 56 78", lot: "Apt 203", statut: "Actif" },
+                { id: 2, nom: "M. Martin", email: "martin@example.com", telephone: "06 23 45 67 89", lot: "Apt 114", statut: "Actif" },
+                { id: 3, nom: "M. Ahmed", email: "ahmed@example.com", telephone: "06 34 56 78 90", lot: "Apt 301", statut: "Actif" },
+                { id: 4, nom: "M. Garcia", email: "garcia@example.com", telephone: "06 45 67 89 01", lot: "Apt 107", statut: "Actif" },
+                { id: 5, nom: "Mme Leroy", email: "leroy@example.com", telephone: "06 56 78 90 12", lot: "Apt 205", statut: "Actif" }
+            ];
+            saveCoproprietairesToStorage(defaultData);
+            return defaultData;
+        }
+    }
+
+    function saveCoproprietairesToStorage(data) {
+        localStorage.setItem('coproprietaires', JSON.stringify(data));
+    }
+
+    // Éléments du DOM
+    const tbody = document.querySelector('.coproprietaires-table tbody');
+    const addCoproBtn = document.getElementById('addCoproBtn');
+    const coproModal = document.getElementById('coproModal');
+    const deleteModal = document.getElementById('deleteModal');
+    const closeButtons = document.querySelectorAll('.modal-close, .modal-close-btn');
+    const saveCoproBtn = document.getElementById('saveCoproBtn');
+    const searchInput = document.querySelector('.search-input');
+    const deleteConfirmBtn = document.querySelector('#deleteModal .btn-primary');
+
+    // Variables d'état
+    let currentEditId = null;
+
+    // Fonction principale de rendu
+    function renderCoproprietaires(data = null) {
+        const copros = data || getCoproprietairesFromStorage();
+        tbody.innerHTML = '';
+
+        copros.forEach(copro => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>
+                    <div style="display: flex; align-items: center;">
+                        <div class="table-avatar">${getInitials(copro.nom)}</div>
+                        ${copro.nom}
+                    </div>
+                </td>
+                <td>${copro.email}</td>
+                <td class="hide-sm">${copro.telephone}</td>
+                <td>${copro.lot}</td>
+                <td class="hide-sm"><span class="badge badge-primary">${copro.statut}</span></td>
+                <td class="action-cell">
+                    <button class="action-btn edit" title="Modifier" data-id="${copro.id}">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="action-btn delete" title="Supprimer" data-id="${copro.id}">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        // Réattacher les événements
+        attachEventListeners();
+    }
+
+    // Gestion des événements
+    function attachEventListeners() {
+        // Édition
+        document.querySelectorAll('.action-btn.edit').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const id = parseInt(this.getAttribute('data-id'));
+                const copro = getCoproprietairesFromStorage().find(c => c.id === id);
+                
+                if (copro) {
+                    currentEditId = id;
+                    document.getElementById('nom').value = copro.nom;
+                    document.getElementById('email').value = copro.email;
+                    document.getElementById('telephone').value = copro.telephone;
+                    document.getElementById('lot').value = copro.lot;
+                    
+                    document.querySelector('#coproModal .modal-title').textContent = 'Modifier copropriétaire';
+                    coproModal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+            });
+        });
+
+        // Suppression
+        document.querySelectorAll('.action-btn.delete').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const id = parseInt(this.getAttribute('data-id'));
+                deleteModal.setAttribute('data-id', id);
+                deleteModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+    }
+
+    // Initialisation
+    function init() {
+        // Chargement initial
+        renderCoproprietaires();
+
+        // Ajout
+        addCoproBtn.addEventListener('click', () => {
+            currentEditId = null;
+            document.getElementById('coproForm').reset();
+            document.querySelector('#coproModal .modal-title').textContent = 'Ajouter un copropriétaire';
+            coproModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        // Fermeture modales
+        closeButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                coproModal.classList.remove('active');
+                deleteModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+        });
+
+        // Sauvegarde
+        saveCoproBtn.addEventListener('click', () => {
+            const nom = document.getElementById('nom').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const telephone = document.getElementById('telephone').value.trim();
+            const lot = document.getElementById('lot').value.trim();
+
+            if (!nom || !email || !telephone || !lot) {
+                alert('Veuillez remplir tous les champs');
+                return;
+            }
+
+            let copros = getCoproprietairesFromStorage();
+
+            if (currentEditId) {
+                // Modification
+                const index = copros.findIndex(c => c.id === currentEditId);
+                if (index !== -1) {
+                    copros[index] = { ...copros[index], nom, email, telephone, lot };
+                }
+            } else {
+                // Ajout
+                copros.push({
+                    id: generateId(),
+                    nom,
+                    email,
+                    telephone,
+                    lot,
+                    statut: "Actif"  // c'est le statut q'il saffiche dans le tableau (par defaut)
+                });
+            }
+
+            saveCoproprietairesToStorage(copros);
+            renderCoproprietaires();
+            coproModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        // Confirmation suppression
+        deleteConfirmBtn.addEventListener('click', () => {
+            const id = parseInt(deleteModal.getAttribute('data-id'));
+            let copros = getCoproprietairesFromStorage().filter(c => c.id !== id);
+            
+            saveCoproprietairesToStorage(copros);
+            renderCoproprietaires();
+            deleteModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        // Recherche
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const copros = getCoproprietairesFromStorage();
+            
+            if (!term) {
+                renderCoproprietaires();
+                return;
+            }
+
+            const filtered = copros.filter(copro => 
+                copro.nom.toLowerCase().includes(term) ||
+                copro.email.toLowerCase().includes(term) ||
+                copro.telephone.toLowerCase().includes(term) ||
+                copro.lot.toLowerCase().includes(term)
+            );
+
+            renderCoproprietaires(filtered);
+        });
+
+        // Fermer modales en cliquant à l'extérieur
+        window.addEventListener('click', (e) => {
+            if (e.target === coproModal || e.target === deleteModal) {
+                coproModal.classList.remove('active');
+                deleteModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+    }
+
+    // Démarrer l'application
+    init();
+</script>
+  
+</body>
+</html>
