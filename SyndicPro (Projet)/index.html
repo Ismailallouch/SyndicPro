@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Espace Syndic Professionnel</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="left-panel"><!--c'est la partie gauch de login-->
+      <div class="overlay"></div>
+      <div class="content">
+        <h1>Bienvenue sur votre espace de gestion</h1>
+        <h4>Gérez vos copropriétés en toute simplicité avec notre plateforme intuitive.</p>
+        <div class="features">
+          <div class="feature">
+            <i class="fas fa-building"></i> <!--c'est l'icone de la maison-->
+            <span>Gestion de copropriétés</span>
+          </div>
+          <div class="feature">
+            <i class="fas fa-file-invoice"></i>
+            <span>Facturation simplifiée</span>
+          </div>
+          <div class="feature">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Planification d'assemblées</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-panel">
+      <div class="login-box">
+        <div class="brand">
+          <div class="logo-container">
+            <i class="fas fa-city logo-icon"></i>
+          </div>
+          <h2>Espace <span>Syndic</span></h2> <!--ca c'est pour changer la couleur de Syndi dans le css-->
+          <p>Accédez à votre plateforme de gestion professionnelle</p>
+        </div>
+
+        <form id="loginForm">
+          <div class="input-box">
+            <input type="email" id="email" required />
+            <label><i class="fas fa-envelope"></i> Email</label>
+          </div>
+          
+          <div class="input-box">
+            <input type="password" id="password" required />
+            <label><i class="fas fa-lock"></i> Mot de passe</label>
+            <i class="fas fa-eye-slash toggle-password"></i>
+          </div>
+          
+          <div class="options-row">
+            <div class="remember-me">
+              <input type="checkbox" id="remember" />
+              <label for="remember">Se souvenir de moi</label>
+            </div>
+            <div class="forgot-pass">
+              <a href="#">Mot de passe oublié ?</a>
+            </div>
+          </div>
+          
+          <button type="submit" class="btn">
+            <span>Se connecter</span>
+            <i class="fas fa-arrow-right"></i>
+          </button>
+          
+          <div class="separator">
+            <span>ou</span>
+          </div>
+          
+          <div class="signup-link">
+            <p>Vous n'avez pas de compte ?</p>
+            <a href="signup.html">Créer un compte</a>
+          </div>
+        </form>
+        
+        <div class="footer">
+          <p>© 2025 SyndicPro - Tous droits réservés</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="notification" class="notification">
+    <i class="fas fa-exclamation-circle"></i>
+    <span id="notification-message">Message de notification</span>
+  </div>
+
+  <script>
+    // Toggle password visibility
+    document.querySelector('.toggle-password').addEventListener('click', function() {
+      const passwordInput = document.getElementById('password');
+      const icon = this;
+      
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      } else {
+        passwordInput.type = 'password';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      }
+    });
+
+    // Show notification
+    function showNotification(message, isError = false) {
+      const notification = document.getElementById('notification');
+      const notificationMessage = document.getElementById('notification-message');
+      
+      notificationMessage.textContent = message;
+      notification.classList.add('show');
+      
+      if (isError) {
+        notification.classList.add('error');
+      } else {
+        notification.classList.remove('error');
+      }
+      
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3000);
+    }
+
+    // Form submission
+    document.getElementById("loginForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      
+      // Loading state
+      const button = document.querySelector('.btn');
+      button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+      button.disabled = true;
+      
+      // Simulate network delay
+      setTimeout(() => {
+        if (email === "allouch@gmail.com" && password === "123456") {
+          showNotification("Connexion réussie, redirection en cours...");
+          setTimeout(() => {
+            window.location.href = "dashboard.html";
+          }, 1000);
+        } else {
+          showNotification("Email ou mot de passe incorrect !", true);
+          button.innerHTML = '<span>Se connecter</span><i class="fas fa-arrow-right"></i>';
+          button.disabled = false;
+        }
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
