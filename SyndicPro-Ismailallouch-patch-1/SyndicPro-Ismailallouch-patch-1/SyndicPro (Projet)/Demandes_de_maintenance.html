@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demandes de Maintenance - SyndicPro</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #2a5298;
+      --primary-light: #3a67b6;
+      --primary-dark: #1c3c76;
+      --accent-color: #00c6ff;
+      --secondary-color: #4CAF50;
+      --warning-color: #FFC107;
+      --danger-color: #F44336;
+      --text-color: #333;
+      --text-light: #666;
+      --text-muted: #999;
+      --background-color: #f4f7fa;
+      --background-light: #ffffff;
+      --border-color: #e1e5eb;
+      --transition: all 0.4s ease;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    body {
+      background-color: var(--background-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+    }
+    
+    /* Sidebar styles */
+   .sidebar {
+      width: 260px;
+      height: 100vh;
+      background-color: var(--background-light);
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      border-radius: 10px;
+      margin-right: 12px;
+    }
+    
+    .logo-icon {
+      font-size: 20px;
+      color: white;
+    }
+    
+    .brand-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+    
+    .brand-name span {
+      color: var(--accent-color);
+    }
+    
+    .sidebar-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 0;
+    }
+    
+    .menu-label {
+      text-transform: uppercase;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding: 10px 20px;
+      margin-top: 15px;
+    }
+    
+    .menu-items {
+      list-style: none;
+    }
+    
+    .menu-item {
+      margin-bottom: 5px;
+    }
+    
+    .menu-link {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: var(--text-color);
+      text-decoration: none;
+      transition: var(--transition);
+      border-left: 3px solid transparent;
+    }
+    
+    .menu-link:hover {
+      background-color: rgba(42, 82, 152, 0.05);
+    }
+    
+    .menu-link.active {
+      border-left-color: var(--primary-color);
+      background-color: rgba(42, 82, 152, 0.08);
+      color: var(--primary-color);
+    }
+    
+    .menu-icon {
+      font-size: 18px;
+      margin-right: 12px;
+      width: 24px;
+      text-align: center;
+    }
+    
+    .sidebar-footer {
+      padding: 15px 20px;
+      border-top: 1px solid var(--border-color);
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+    }
+    
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #e0e0e0, #c0c0c0);
+      margin-right: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: var(--text-color);
+    }
+    
+    .user-details {
+      flex: 1;
+    }
+    
+    .user-name {
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .user-role {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    
+    .logout-btn {
+      margin-left: 10px;
+      color: var(--text-light);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: var(--transition);
+    }
+    
+    .logout-btn:hover {
+      color: var(--danger-color);
+    }
+    
+    /* Main content styles */
+    .main-content {
+      flex: 1;
+      margin-left: 260px;
+      padding: 20px;
+    }
+    
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    
+    .page-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+    
+    .top-bar-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--primary-light);
+      transform: translateY(-2px);
+    }
+    
+    .btn-secondary {
+      background-color: var(--background-color);
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+    }
+    
+    .filter-container {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .filter-select {
+      padding: 8px 15px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background-color: var(--background-light);
+      font-size: 14px;
+      min-width: 180px;
+    }
+    
+    .table-card {
+      background-color: var(--background-light);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .requests-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    
+    .requests-table th {
+      text-align: left;
+      padding: 12px 15px;
+      background-color: var(--background-color);
+      color: var(--text-light);
+      font-weight: 500;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .requests-table td {
+      padding: 15px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 14px;
+      vertical-align: middle;
+    }
+    
+    .requests-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .priority-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .priority-high {
+      background-color: rgba(244, 67, 54, 0.1);
+      color: var(--danger-color);
+    }
+    
+    .priority-medium {
+      background-color: rgba(255, 193, 7, 0.1);
+      color: var(--warning-color);
+    }
+    
+    .priority-low {
+      background-color: rgba(76, 175, 80, 0.1);
+      color: var(--secondary-color);
+    }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      background-color: var(--background-color);
+      color: var(--text-color);
+    }
+    
+    .status-pending {
+      background-color: rgba(255, 193, 7, 0.1);
+      color: var(--warning-color);
+    }
+    
+    .status-in-progress {
+      background-color: rgba(42, 82, 152, 0.1);
+      color: var(--primary-color);
+    }
+    
+    .status-resolved {
+      background-color: rgba(76, 175, 80, 0.1);
+      color: var(--secondary-color);
+    }
+    
+    .action-btn {
+      background: none;
+      border: none;
+      color: var(--primary-color);
+      cursor: pointer;
+      font-size: 14px;
+      margin-right: 10px;
+      transition: var(--transition);
+    }
+    
+    .action-btn:hover {
+      color: var(--primary-light);
+    }
+    
+    .action-btn.danger {
+      color: var(--danger-color);
+    }
+    
+    .action-btn.danger:hover {
+      color: #d32f2f;
+    }
+    
+    .pagination {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+    }
+    
+    .pagination-info {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+    
+    .pagination-controls {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .pagination-btn {
+      padding: 8px 12px;
+      border-radius: 6px;
+      background-color: var(--background-color);
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .pagination-btn.active {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .pagination-btn:hover:not(.active) {
+      background-color: #e0e0e0;
+    }
+    
+    .pagination-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .modal-content {
+      background-color: var(--background-light);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 600px;
+      padding: 25px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .modal-title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 10px 15px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      font-size: 14px;
+    }
+    
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+    }
+    
+    textarea.form-control {
+      min-height: 120px;
+      resize: vertical;
+    }
+    
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 70px;
+      }
+      
+      .main-content {
+        margin-left: 70px;
+      }
+      
+      .requests-table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="logo-container">
+            <i class="fas fa-city logo-icon"></i>
+          </div>
+          <div class="brand-name">Syndic<span>Pro</span></div>
+        </div>
+    
+        <div class="sidebar-content">
+          <p class="menu-label">Principal</p>
+          <ul class="menu-items">
+            <li class="menu-item">
+              <a href="dashboard.html" class="menu-link ">
+                <i class="fas fa-home menu-icon"></i>
+                <span class="menu-text">Dashboard</span>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="Copropriétaires.html" class="menu-link">
+                <i class="fas fa-users menu-icon"></i>
+                <span class="menu-text">Copropriétaires</span>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="lots.html" class="menu-link">
+                <i class="fas fa-building menu-icon"></i>
+                <span class="menu-text">Lots</span>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="Charges_Paiements.html" class="menu-link">
+                <i class="fas fa-file-invoice-dollar menu-icon"></i>
+                <span class="menu-text">Charges & Paiements</span>
+              </a>
+            </li>
+          </ul>
+    
+          <p class="menu-label">Gestion</p>
+          <ul class="menu-items">
+            <li class="menu-item">
+              <a href="Demandes_de_maintenance.html" class="menu-link active">
+                <i class="fas fa-tools menu-icon"></i>
+                <span class="menu-text">Demandes de maintenance</span>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="evenement.html" class="menu-link">
+                <i class="fas fa-calendar-alt menu-icon"></i>
+                <span class="menu-text">Événements</span>
+              </a>
+            </li>
+          </ul>
+          
+          
+        
+        
+          <p class="menu-label">Rapports</p>
+        <ul class="menu-items">
+          <li class="menu-item">
+            <a href="statistiques.html" class="menu-link">
+              <i class="fas fa-chart-pie menu-icon"></i>
+              <span class="menu-text">Statistiques</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="Paramètres.html" class="menu-link">
+              <i class="fas fa-cog menu-icon"></i>
+              <span class="menu-text">Paramètres</span>
+            </a>
+          </li>
+        </ul>
+        </div>
+        <div class="sidebar-footer">
+          <div class="user-info">
+            <div class="user-avatar">
+              <i class="fas fa-user"></i>
+            </div>
+            <div class="user-details">
+              <div class="user-name">Ismail Allouch</div>
+              <div class="user-role">Administrateur</div>
+            </div>
+            <a href="logout.html" class="logout-btn" title="Déconnexion">
+              <i class="fas fa-sign-out-alt"></i>
+            </a>
+          </div>
+        </div>
+      </aside>
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="top-bar">
+      <h1 class="page-title">Demandes de Maintenance</h1>
+      
+      <div class="top-bar-actions">
+        <button id="newRequestBtn" class="btn btn-primary">
+          <i class="fas fa-plus"></i> Nouvelle demande
+        </button>
+      </div>
+    </div>
+    
+    <!-- Filters -->
+    <div class="filter-container">
+      <select id="statusFilter" class="filter-select">
+        <option value="">Tous les statuts</option>
+        <option value="pending">En attente</option>
+        <option value="in-progress">En cours</option>
+        <option value="resolved">Résolu</option>
+      </select>
+      
+      <select id="priorityFilter" class="filter-select">
+        <option value="">Toutes les priorités</option>
+        <option value="low">Basse</option>
+        <option value="medium">Moyenne</option>
+        <option value="high">Haute</option>
+        <option value="critical">Critique</option>
+      </select>
+      
+      <select id="lotFilter" class="filter-select">
+        <option value="">Tous les lots</option>
+        <option value="A101">A101</option>
+        <option value="A102">A102</option>
+        <option value="B201">B201</option>
+        <option value="C305">C305</option>
+        <option value="common">Commun</option>
+      </select>
+    </div>
+    
+    <!-- Requests Table -->
+    <div class="table-card">
+      <table class="requests-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Problème</th>
+            <th>Lot</th>
+            <th>Date</th>
+            <th>Priorité</th>
+            <th>Statut</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="requestsTableBody">
+          <!-- Les données seront chargées dynamiquement -->
+        </tbody>
+      </table>
+      
+      <div class="pagination">
+        <div class="pagination-info" id="paginationInfo">Affichage 0-0 sur 0 demandes</div>
+        <div class="pagination-controls">
+          <button id="prevPageBtn" class="pagination-btn" disabled>
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <div id="pageNumbers"></div>
+          <button id="nextPageBtn" class="pagination-btn">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <!-- New/Edit Request Modal -->
+  <div id="requestModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">Nouvelle Demande de Maintenance</h2>
+        <button class="close-modal">&times;</button>
+      </div>
+      
+      <form id="requestForm">
+        <input type="hidden" id="requestId">
+        <div class="form-group">
+          <label for="problem" class="form-label">Problème *</label>
+          <input type="text" id="problem" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="lot" class="form-label">Lot *</label>
+          <select id="lot" class="form-control" required>
+            <option value="">Sélectionner un lot</option>
+            <option value="A101">A101</option>
+            <option value="A102">A102</option>
+            <option value="B201">B201</option>
+            <option value="C305">C305</option>
+            <option value="common">Commun</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="priority" class="form-label">Priorité *</label>
+          <select id="priority" class="form-control" required>
+            <option value="low">Basse</option>
+            <option value="medium">Moyenne</option>
+            <option value="high">Haute</option>
+            <option value="critical">Critique</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="description" class="form-label">Description *</label>
+          <textarea id="description" class="form-control" required></textarea>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary close-modal">Annuler</button>
+          <button type="submit" class="btn btn-primary" id="submitBtn">
+            <span id="submitBtnText">Enregistrer</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Notes Modal -->
+  <div id="notesModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Notes Administratives</h2>
+        <button class="close-modal">&times;</button>
+      </div>
+      
+      <div class="form-group">
+        <label for="adminNotes" class="form-label">Notes</label>
+        <textarea id="adminNotes" class="form-control"></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label for="status" class="form-label">Changer le statut</label>
+        <select id="status" class="form-control">
+          <option value="pending">En attente</option>
+          <option value="in-progress">En cours</option>
+          <option value="resolved">Résolu</option>
+        </select>
+      </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary close-modal">Annuler</button>
+        <button type="button" id="saveNotesBtn" class="btn btn-primary">
+          <span id="saveNotesBtnText">Enregistrer</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div id="confirmModal" class="modal">
+    <div class="modal-content" style="max-width: 400px;">
+      <div class="modal-header">
+        <h2 class="modal-title">Confirmer la suppression</h2>
+        <button class="close-modal">&times;</button>
+      </div>
+      
+      <div class="form-group">
+        <p>Êtes-vous sûr de vouloir supprimer cette demande de maintenance ? Cette action est irréversible.</p>
+      </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary close-modal">Annuler</button>
+        <button type="button" id="confirmDeleteBtn" class="btn "  >Supprimer</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // =============================================
+      // CONSTANTES ET VARIABLES GLOBALES
+      // =============================================
+      const ITEMS_PER_PAGE = 5;
+      let currentPage = 1;
+      let totalRequests = 0;
+      let allRequests = [];
+      let filteredRequests = [];
+      
+      // Éléments du DOM
+      const elements = {
+        newRequestBtn: document.getElementById('newRequestBtn'),
+        requestModal: document.getElementById('requestModal'),
+        notesModal: document.getElementById('notesModal'),
+        confirmModal: document.getElementById('confirmModal'),
+        closeModalBtns: document.querySelectorAll('.close-modal'),
+        requestForm: document.getElementById('requestForm'),
+        requestsTableBody: document.getElementById('requestsTableBody'),
+        statusFilter: document.getElementById('statusFilter'),
+        priorityFilter: document.getElementById('priorityFilter'),
+        lotFilter: document.getElementById('lotFilter'),
+        paginationInfo: document.getElementById('paginationInfo'),
+        prevPageBtn: document.getElementById('prevPageBtn'),
+        nextPageBtn: document.getElementById('nextPageBtn'),
+        pageNumbers: document.getElementById('pageNumbers'),
+        modalTitle: document.getElementById('modalTitle'),
+        requestId: document.getElementById('requestId'),
+        submitBtn: document.getElementById('submitBtn'),
+        submitBtnText: document.getElementById('submitBtnText'),
+        saveNotesBtn: document.getElementById('saveNotesBtn'),
+        saveNotesBtnText: document.getElementById('saveNotesBtnText'),
+        confirmDeleteBtn: document.getElementById('confirmDeleteBtn')
+      };
+      
+      // =============================================
+      // FONCTIONS PRINCIPALES
+      // =============================================
+      
+      /**
+       * Charge les demandes de maintenance depuis l'API (simulée)
+       */
+      async function fetchMaintenanceRequests() {
+        try {
+          // Simulation d'un appel API avec délai
+          await new Promise(resolve => setTimeout(resolve, 800));
+          
+          // Données de démo (seront remplacées par un vrai appel API)
+          const demoRequests = [
+            {
+              id: 423,
+              problem: "Fuite d'eau dans la salle de bain",
+              lot: "A102",
+              date: "02/04/25",
+              priority: "low",
+              status: "pending",
+              description: "Fuite sous l'évier de la salle de bain principale",
+              notes: ""
+            },
+            {
+              id: 422,
+              problem: "Climatisation en Panne",
+              lot: "B201",
+              date: "28/03/25",
+              priority: "high",
+              status: "in-progress",
+              description: "La climatisation ne fonctionne plus dans le salon",
+              notes: "Technicien prévu pour le 05/04"
+            },
+            {
+              id: 421,
+              problem: "Problème d'Ascenseur",
+              lot: "Commun",
+              date: "01/04/25",
+              priority: "critical",
+              status: "in-progress",
+              description: "L'ascenseur bloque entre le RDC et le 1er étage",
+              notes: "Réparation urgente en cours"
+            },
+            {
+              id: 420,
+              problem: "Luminaire défectueux",
+              lot: "C305",
+              date: "25/03/25",
+              priority: "medium",
+              status: "resolved",
+              description: "Le luminaire du couloir ne s'allume plus",
+              notes: "Réparé le 28/03"
+            },
+            {
+              id: 419,
+              problem: "Fenêtre bloquée",
+              lot: "A101",
+              date: "20/03/25",
+              priority: "medium",
+              status: "resolved",
+              description: "La fenêtre de la chambre ne s'ouvre plus",
+              notes: "Réparé le 22/03"
+            },
+            {
+              id: 418,
+              problem: "Chauffe-eau en panne",
+              lot: "B201",
+              date: "18/03/25",
+              priority: "high",
+              status: "resolved",
+              description: "Plus d'eau chaude dans la salle de bain",
+              notes: "Remplacement du chauffe-eau effectué"
+            },
+            {
+              id: 417,
+              problem: "Porte d'entrée difficile à ouvrir",
+              lot: "C305",
+              date: "15/03/25",
+              priority: "low",
+              status: "pending",
+              description: "La porte d'entrée grince et est difficile à ouvrir",
+              notes: ""
+            }
+          ];
+          
+          allRequests = demoRequests;
+          totalRequests = demoRequests.length;
+          applyFilters();
+        } catch (error) {
+          console.error('Erreur lors du chargement des demandes:', error);
+          showError('Impossible de charger les demandes. Veuillez réessayer plus tard.');
+        }
+      }
+      
+      /**
+       * Affiche les demandes dans le tableau avec pagination
+       */
+      function renderRequests(requests) {
+        filteredRequests = requests;
+        totalRequests = requests.length;
+        
+        // Calcul de la pagination
+        const totalPages = Math.ceil(totalRequests / ITEMS_PER_PAGE);
+        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+        const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalRequests);
+        const paginatedRequests = requests.slice(startIndex, endIndex);
+        
+        // Mise à jour des informations de pagination
+        elements.paginationInfo.textContent = `Affichage ${startIndex + 1}-${endIndex} sur ${totalRequests} demandes`;
+        
+        // Gestion des boutons de pagination
+        elements.prevPageBtn.disabled = currentPage === 1;
+        elements.nextPageBtn.disabled = currentPage === totalPages;
+        
+        // Génération des numéros de page
+        elements.pageNumbers.innerHTML = '';
+        for (let i = 1; i <= totalPages; i++) {
+          const pageBtn = document.createElement('button');
+          pageBtn.className = `pagination-btn ${i === currentPage ? 'active' : ''}`;
+          pageBtn.textContent = i;
+          pageBtn.addEventListener('click', () => {
+            currentPage = i;
+            renderRequests(filteredRequests);
+          });
+          elements.pageNumbers.appendChild(pageBtn);
+        }
+        
+        // Remplissage du tableau
+        elements.requestsTableBody.innerHTML = '';
+        
+        if (paginatedRequests.length === 0) {
+          elements.requestsTableBody.innerHTML = `
+            <tr>
+              <td colspan="7" style="text-align: center; padding: 30px;">
+                Aucune demande trouvée avec les filtres sélectionnés
+              </td>
+            </tr>
+          `;
+          return;
+        }
+        
+        paginatedRequests.forEach(request => {
+          const row = document.createElement('tr');
+          
+          // Déterminer les classes CSS en fonction de la priorité et du statut
+          let priorityClass, priorityText;
+          switch(request.priority) {
+            case 'low':
+              priorityClass = 'priority-low';
+              priorityText = 'Basse';
+              break;
+            case 'medium':
+              priorityClass = 'priority-medium';
+              priorityText = 'Moyenne';
+              break;
+            case 'high':
+              priorityClass = 'priority-high';
+              priorityText = 'Haute';
+              break;
+            case 'critical':
+              priorityClass = 'priority-high';
+              priorityText = 'Critique';
+              break;
+          }
+          
+          let statusClass, statusText;
+          switch(request.status) {
+            case 'pending':
+              statusClass = 'status-pending';
+              statusText = 'En attente';
+              break;
+            case 'in-progress':
+              statusClass = 'status-in-progress';
+              statusText = 'En cours';
+              break;
+            case 'resolved':
+              statusClass = 'status-resolved';
+              statusText = 'Résolu';
+              break;
+          }
+          
+          row.innerHTML = `
+            <td>#${request.id}</td>
+            <td>${request.problem}</td>
+            <td>${request.lot}</td>
+            <td>${request.date}</td>
+            <td><span class="priority-badge ${priorityClass}">${priorityText}</span></td>
+            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+            <td>
+              <button class="action-btn edit-btn" data-id="${request.id}">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="action-btn notes-btn" data-id="${request.id}">
+                <i class="fas fa-comment-alt"></i>
+              </button>
+              <button class="action-btn danger delete-btn" data-id="${request.id}">
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          `;
+          
+          elements.requestsTableBody.appendChild(row);
+        });
+        
+        // Ajouter les écouteurs d'événements pour les boutons d'action
+        addActionEventListeners();
+      }
+      
+      /**
+       * Applique les filtres sélectionnés
+       */
+      function applyFilters() {
+        const statusFilter = elements.statusFilter.value;
+        const priorityFilter = elements.priorityFilter.value;
+        const lotFilter = elements.lotFilter.value;
+        
+        let filteredRequests = [...allRequests];
+        
+        if (statusFilter) {
+          filteredRequests = filteredRequests.filter(r => r.status === statusFilter);
+        }
+        
+        if (priorityFilter) {
+          filteredRequests = filteredRequests.filter(r => r.priority === priorityFilter);
+        }
+        
+        if (lotFilter) {
+          filteredRequests = filteredRequests.filter(r => r.lot === lotFilter);
+        }
+        
+        // Réinitialiser à la première page lors du filtrage
+        currentPage = 1;
+        renderRequests(filteredRequests);
+      }
+      
+      /**
+       * Ouvre le formulaire pour une nouvelle demande
+       */
+      function openNewRequestForm() {
+        elements.modalTitle.textContent = 'Nouvelle Demande de Maintenance';
+        elements.requestForm.reset();
+        elements.requestId.value = '';
+        openModal(elements.requestModal);
+      }
+      
+      /**
+       * Ouvre le formulaire pour éditer une demande existante
+       */
+      function openEditRequestForm(requestId) {
+        const request = allRequests.find(r => r.id == requestId);
+        if (!request) return;
+        
+        elements.modalTitle.textContent = 'Modifier la Demande';
+        elements.requestId.value = request.id;
+        document.getElementById('problem').value = request.problem;
+        document.getElementById('lot').value = request.lot;
+        document.getElementById('priority').value = request.priority;
+        document.getElementById('description').value = request.description;
+        
+        openModal(elements.requestModal);
+      }
+      
+      /**
+       * Sauvegarde une demande (nouvelle ou édition)
+       */
+      async function saveRequest(formData) {
+        try {
+          // Simulation d'un appel API avec délai
+          await new Promise(resolve => setTimeout(resolve, 800));
+          
+          if (formData.id) {
+            // Édition d'une demande existante
+            const index = allRequests.findIndex(r => r.id == formData.id);
+            if (index !== -1) {
+              allRequests[index] = {
+                ...allRequests[index],
+                problem: formData.problem,
+                lot: formData.lot,
+                priority: formData.priority,
+                description: formData.description
+              };
+            }
+          } else {
+            // Création d'une nouvelle demande
+            const newId = Math.max(...allRequests.map(r => r.id)) + 1;
+            const newRequest = {
+              id: newId,
+              problem: formData.problem,
+              lot: formData.lot,
+              date: new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' }),
+              priority: formData.priority,
+              status: 'pending',
+              description: formData.description,
+              notes: ''
+            };
+            
+            allRequests.unshift(newRequest);
+          }
+          
+          // Recharger les demandes
+          applyFilters();
+          closeModal(elements.requestModal);
+          showAlert('success', 'Demande enregistrée avec succès!');
+        } catch (error) {
+          console.error('Erreur lors de la sauvegarde:', error);
+          showAlert('error', 'Une erreur est survenue lors de la sauvegarde.');
+        }
+      }
+      
+      /**
+       * Ouvre les notes administratives pour une demande
+       */
+      function openRequestNotes(requestId) {
+        const request = allRequests.find(r => r.id == requestId);
+        if (!request) return;
+        
+        document.getElementById('adminNotes').value = request.notes || '';
+        document.getElementById('status').value = request.status;
+        elements.saveNotesBtn.setAttribute('data-id', requestId);
+        openModal(elements.notesModal);
+      }
+      
+      /**
+       * Sauvegarde les notes et le statut d'une demande
+       */
+      async function saveRequestNotes(requestId, notes, status) {
+        try {
+          // Simulation d'un appel API avec délai
+          await new Promise(resolve => setTimeout(resolve, 500));
+          
+          const request = allRequests.find(r => r.id == requestId);
+          if (request) {
+            request.notes = notes;
+            request.status = status;
+            
+            // Recharger les demandes
+            applyFilters();
+            closeModal(elements.notesModal);
+            showAlert('success', 'Notes enregistrées avec succès!');
+          }
+        } catch (error) {
+          console.error('Erreur lors de la sauvegarde des notes:', error);
+          showAlert('error', 'Une erreur est survenue lors de la sauvegarde des notes.');
+        }
+      }
+      
+      /**
+       * Supprime une demande après confirmation (style identique aux autres pages)
+       */
+      async function deleteRequest(requestId) {
+        // Création de la modale de confirmation stylisée
+        const modal = document.createElement('div');
+        modal.style.position = 'fixed';
+        modal.style.top = '0';
+        modal.style.left = '0';
+        modal.style.width = '100%';
+        modal.style.height = '100%';
+        modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
+        modal.style.display = 'flex';
+        modal.style.justifyContent = 'center';
+        modal.style.alignItems = 'center';
+        modal.style.zIndex = '1000';
+
+        modal.innerHTML = `
+          <div style="background: white; padding: 5px; border-radius: 12px; width: 500px; height:205px;">
+            <h3 style="background: white; padding: 20px; font-size: 18px; font-weight: 600;">Confirmer la suppression</h3>
+            <hr style="border: 0; height: 0.5px; background: #f0f0f0; margin: 0;"> 
+            <p style="padding: 20px;">Êtes-vous sûr de vouloir supprimer cette demande de maintenance ? Cette action est irréversible.</p>
+            <hr style="border: 0; height: 0.5px; background: #f0f0f0; margin: 0;">
+            <div style="display: flex; padding-left:288px; padding-top: 18px;">
+              <button id="cancelDeleteBtn" style="padding: 8px 16px; margin-right:12px; background: #f0f0f0; border: none; border-radius: 4px; transition: all 0.2s ease;">Annuler</button>
+              <button id="confirmDeleteBtn" style="padding: 8px 16px; background: #ff4444; color: white; border: none; border-radius: 4px; transition: all 0.2s ease;">Supprimer</button>
+            </div>
+          </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Gestion des effets hover
+        const cancelBtn = modal.querySelector('#cancelDeleteBtn');
+        const confirmBtn = modal.querySelector('#confirmDeleteBtn');
+
+        cancelBtn.addEventListener('mouseenter', () => {
+          cancelBtn.style.backgroundColor = '#e0e0e0';
+          cancelBtn.style.transform = 'scale(1.02)';
+        });
+        cancelBtn.addEventListener('mouseleave', () => {
+          cancelBtn.style.backgroundColor = '#f0f0f0';
+          cancelBtn.style.transform = 'scale(1)';
+        });
+
+        confirmBtn.addEventListener('mouseenter', () => {
+          confirmBtn.style.backgroundColor = '#e53935';
+          confirmBtn.style.transform = 'scale(1.02)';
+        });
+        confirmBtn.addEventListener('mouseleave', () => {
+          confirmBtn.style.backgroundColor = '#ff4444';
+          confirmBtn.style.transform = 'scale(1)';
+        });
+
+        // Gestion de la suppression
+        confirmBtn.addEventListener('click', async () => {
+          try {
+            // Simulation d'un appel API avec délai
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            allRequests = allRequests.filter(r => r.id != requestId);
+            applyFilters();
+            document.body.removeChild(modal);
+            showAlert('success', 'Demande supprimée avec succès!');
+          } catch (error) {
+            console.error('Erreur lors de la suppression:', error);
+            showAlert('error', 'Une erreur est survenue lors de la suppression.');
+          }
+        });
+
+        // Gestion de l'annulation
+        cancelBtn.addEventListener('click', () => {
+          document.body.removeChild(modal);
+        });
+      }
+      
+      // =============================================
+      // FONCTIONS UTILITAIRES
+      // =============================================
+      
+      /**
+       * Affiche une alerte à l'utilisateur
+       * @param {string} type - 'success' ou 'error'
+       * @param {string} message - Message à afficher
+       */
+      function showAlert(type, message) {
+        const alertDiv = document.createElement('div');
+        alertDiv.style.position = 'fixed';
+        alertDiv.style.top = '20px';
+        alertDiv.style.right = '20px';
+        alertDiv.style.padding = '15px 20px';
+        alertDiv.style.borderRadius = '8px';
+        alertDiv.style.color = 'white';
+        alertDiv.style.zIndex = '1000';
+        alertDiv.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+        alertDiv.style.animation = 'fadeIn 0.3s ease-in-out';
+        
+        if (type === 'success') {
+          alertDiv.style.backgroundColor = '#4CAF50';
+        } else {
+          alertDiv.style.backgroundColor = '#F44336';
+        }
+        
+        alertDiv.textContent = message;
+        document.body.appendChild(alertDiv);
+        
+        setTimeout(() => {
+          alertDiv.style.animation = 'fadeOut 0.3s ease-in-out';
+          setTimeout(() => {
+            document.body.removeChild(alertDiv);
+          }, 300);
+        }, 3000);
+      }
+
+      /**
+       * Affiche un message d'erreur
+       * @param {string} message - Message d'erreur
+       */
+       function showError(message) {
+        elements.requestsTableBody.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align: center; padding: 30px; color: var(--danger-color);">
+              <i class="fas fa-exclamation-circle" style="margin-right: 8px;"></i>
+              ${message}
+            </td>
+          </tr>
+        `;
+      }
+
+      /**
+       * Ouvre une modale
+       * @param {HTMLElement} modal - Élément modale à ouvrir
+       */
+      function openModal(modal) {
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      }
+
+      /**
+       * Ferme une modale
+       * @param {HTMLElement} modal - Élément modale à fermer
+       */
+      function closeModal(modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+
+      /**
+       * Ajoute les écouteurs d'événements pour les boutons d'action
+       */
+      function addActionEventListeners() {
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const requestId = this.getAttribute('data-id');
+            openEditRequestForm(requestId);
+          });
+        });
+        
+        document.querySelectorAll('.notes-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const requestId = this.getAttribute('data-id');
+            openRequestNotes(requestId);
+          });
+        });
+        
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const requestId = this.getAttribute('data-id');
+            deleteRequest(requestId);
+          });
+        });
+      }
+
+      // =============================================
+      // ÉCOUTEURS D'ÉVÉNEMENTS
+      // =============================================
+
+      // Gestion des modales
+      elements.newRequestBtn.addEventListener('click', openNewRequestForm);
+      
+      elements.closeModalBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          const modal = this.closest('.modal');
+          closeModal(modal);
+        });
+      });
+      
+      // Fermer la modale en cliquant à l'extérieur
+      window.addEventListener('click', (e) => {
+        if (e.target === elements.requestModal) closeModal(elements.requestModal);
+        if (e.target === elements.notesModal) closeModal(elements.notesModal);
+        if (e.target === elements.confirmModal) closeModal(elements.confirmModal);
+      });
+      
+      // Soumission du formulaire
+      elements.requestForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = {
+          id: elements.requestId.value,
+          problem: document.getElementById('problem').value,
+          lot: document.getElementById('lot').value,
+          priority: document.getElementById('priority').value,
+          description: document.getElementById('description').value
+        };
+        
+        saveRequest(formData);
+      });
+      
+      // Sauvegarder les notes
+      elements.saveNotesBtn.addEventListener('click', function() {
+        const requestId = this.getAttribute('data-id');
+        const notes = document.getElementById('adminNotes').value;
+        const status = document.getElementById('status').value;
+        
+        saveRequestNotes(requestId, notes, status);
+      });
+      
+      // Filtrage des demandes
+      elements.statusFilter.addEventListener('change', applyFilters);
+      elements.priorityFilter.addEventListener('change', applyFilters);
+      elements.lotFilter.addEventListener('change', applyFilters);
+      
+      // Pagination
+      elements.prevPageBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+          currentPage--;
+          renderRequests(filteredRequests);
+        }
+      });
+      
+      elements.nextPageBtn.addEventListener('click', () => {
+        const totalPages = Math.ceil(totalRequests / ITEMS_PER_PAGE);
+        if (currentPage < totalPages) {
+          currentPage++;
+          renderRequests(filteredRequests);
+        }
+      });
+
+      // =============================================
+      // INITIALISATION
+      // =============================================
+      
+      // Chargement initial des demandes
+      fetchMaintenanceRequests();
+      
+      // Gestion des erreurs globales
+      window.addEventListener('error', function(e) {
+        console.error('Erreur:', e.error);
+        showAlert('error', 'Une erreur est survenue. Veuillez consulter la console pour plus de détails.');
+      });
+    });
+  </script>
+</body>
+</html>

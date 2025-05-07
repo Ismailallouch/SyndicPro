@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paramètres - SyndicPro</title>
+  <link rel="icon" href="favicon.png" type="favicon.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Variables CSS communes */
+    :root {
+      --primary-color: #2a5298;
+      --primary-light: #3a67b6;
+      --primary-dark: #1c3c76;
+      --accent-color: #00c6ff;
+      --secondary-color: #4CAF50;
+      --warning-color: #FFC107;
+      --danger-color: #F44336;
+      --text-color: #333;
+      --text-light: #666;
+      --text-muted: #999;
+      --background-color: #f4f7fa;
+      --background-light: #ffffff;
+      --border-color: #e1e5eb;
+      --transition: all 0.4s ease;
+    }
+
+    /* Styles de base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: var(--background-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* Sidebar - Identique aux autres pages */
+    .sidebar {
+      width: 260px;
+      height: 100vh;
+      background-color: var(--background-light);
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      border-radius: 10px;
+      margin-right: 12px;
+    }
+
+    .logo-icon {
+      font-size: 20px;
+      color: white;
+    }
+
+    .brand-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+
+    .brand-name span {
+      color: var(--accent-color);
+    }
+
+    .sidebar-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 0;
+    }
+
+    .menu-label {
+      text-transform: uppercase;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding: 10px 20px;
+      margin-top: 15px;
+    }
+
+    .menu-items {
+      list-style: none;
+    }
+
+    .menu-item {
+      margin-bottom: 5px;
+    }
+
+    .menu-link {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: var(--text-color);
+      text-decoration: none;
+      transition: var(--transition);
+      border-left: 3px solid transparent;
+    }
+
+    .menu-link:hover {
+      background-color: rgba(42, 82, 152, 0.05);
+    }
+
+    .menu-link.active {
+      border-left-color: var(--primary-color);
+      background-color: rgba(42, 82, 152, 0.08);
+      color: var(--primary-color);
+    }
+
+    .menu-icon {
+      font-size: 18px;
+      margin-right: 12px;
+      width: 24px;
+      text-align: center;
+    }
+
+    .sidebar-footer {
+      padding: 15px 20px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #e0e0e0, #c0c0c0);
+      margin-right: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: var(--text-color);
+    }
+
+    .user-details {
+      flex: 1;
+    }
+
+    .user-name {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .user-role {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .logout-btn {
+      margin-left: 10px;
+      color: var(--text-light);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: var(--transition);
+    }
+
+    .logout-btn:hover {
+      color: var(--danger-color);
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: 260px;
+      padding: 20px;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+
+    /* Section Paramètres */
+    .settings-container {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 30px;
+    }
+
+    .settings-menu {
+      background-color: var(--background-light);
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      padding: 20px;
+    }
+
+    .settings-menu-item {
+      padding: 12px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-bottom: 5px;
+    }
+
+    .settings-menu-item:hover {
+      background-color: rgba(42, 82, 152, 0.05);
+    }
+
+    .settings-menu-item.active {
+      background-color: rgba(42, 82, 152, 0.1);
+      color: var(--primary-color);
+      font-weight: 500;
+    }
+
+    .settings-menu-item i {
+      margin-right: 10px;
+      width: 20px;
+      text-align: center;
+    }
+
+    .settings-content {
+      background-color: var(--background-light);
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      padding: 30px;
+    }
+
+    .settings-section {
+      display: none;
+    }
+
+    .settings-section.active {
+      display: block;
+    }
+
+    .settings-section-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 25px;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+    }
+
+    .settings-section-title i {
+      margin-right: 10px;
+      color: var(--primary-color);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      max-width: 500px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 14px;
+      transition: var(--transition);
+      background-color: var(--background-light);
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+    }
+
+    .form-text {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 5px;
+    }
+
+    .btn {
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+    }
+
+    .btn-outline:hover {
+      background-color: var(--background-color);
+    }
+
+    .notification-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .notification-item:last-child {
+      border-bottom: none;
+    }
+
+    .notification-info {
+      flex: 1;
+    }
+
+    .notification-title {
+      font-weight: 500;
+      margin-bottom: 5px;
+    }
+
+    .notification-desc {
+      font-size: 13px;
+      color: var(--text-light);
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: var(--transition);
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: var(--transition);
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--primary-color);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .settings-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 70px;
+      }
+      
+      .sidebar-header {
+        justify-content: center;
+        padding: 20px 10px;
+      }
+      
+      .brand-name {
+        display: none;
+      }
+      
+      .logo-container {
+        margin-right: 0;
+      }
+      
+      .menu-label, .menu-text, .user-details {
+        display: none;
+      }
+      
+      .menu-link {
+        justify-content: center;
+        padding: 15px;
+      }
+      
+      .menu-icon {
+        margin-right: 0;
+      }
+      
+      .sidebar-footer {
+        justify-content: center;
+        padding: 15px 10px;
+      }
+      
+      .user-info {
+        justify-content: center;
+      }
+      
+      .user-avatar {
+        margin-right: 0;
+      }
+      
+      .main-content {
+        margin-left: 70px;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+      
+      .settings-content {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-container">
+        <i class="fas fa-city logo-icon"></i>
+      </div>
+      <div class="brand-name">Syndic<span>Pro</span></div>
+    </div>
+    
+    <div class="sidebar-content">
+      <p class="menu-label">Principal</p>
+      <ul class="menu-items">
+        <li class="menu-item">
+          <a href="dashboard.html" class="menu-link">
+            <i class="fas fa-home menu-icon"></i>
+            <span class="menu-text">Dashboard</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="Copropriétaires.html" class="menu-link">
+            <i class="fas fa-users menu-icon"></i>
+            <span class="menu-text">Copropriétaires</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="lots.html" class="menu-link">
+            <i class="fas fa-building menu-icon"></i>
+            <span class="menu-text">Lots</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="charges_paiements.html" class="menu-link">
+            <i class="fas fa-file-invoice-dollar menu-icon"></i>
+            <span class="menu-text">Charges & Paiements</span>
+          </a>
+        </li>
+      </ul>
+      
+      <p class="menu-label">Gestion</p>
+      <ul class="menu-items">
+        <li class="menu-item">
+          <a href="demandes_maintenance.html" class="menu-link">
+            <i class="fas fa-tools menu-icon"></i>
+            <span class="menu-text">Demandes de maintenance</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="evenements.html" class="menu-link">
+            <i class="fas fa-calendar-alt menu-icon"></i>
+            <span class="menu-text">Événements</span>
+          </a>
+        </li>
+      </ul>
+      
+      <p class="menu-label">Rapports</p>
+      <ul class="menu-items">
+        <li class="menu-item">
+          <a href="statistiques.html" class="menu-link">
+            <i class="fas fa-chart-pie menu-icon"></i>
+            <span class="menu-text">Statistiques</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="Paramètres.html" class="menu-link active">
+            <i class="fas fa-cog menu-icon"></i>
+            <span class="menu-text">Paramètres</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="user-details">
+          <div class="user-name">Ismail Allouch</div>
+          <div class="user-role">Administrateur</div>
+        </div>
+        <a href="logout.html" class="logout-btn" title="Déconnexion">
+          <i class="fas fa-sign-out-alt"></i>
+        </a>
+      </div>
+    </div>
+  </aside>
+  
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="top-bar">
+      <h1 class="page-title">Paramètres</h1>
+    </div>
+    
+    <div class="settings-container">
+      <!-- Menu des paramètres -->
+      <div class="settings-menu">
+        <div class="settings-menu-item active" data-target="account-settings">
+          <i class="fas fa-user-cog"></i>
+          <span>Compte Administrateur</span>
+        </div>
+        <div class="settings-menu-item" data-target="password-settings">
+          <i class="fas fa-lock"></i>
+          <span>Mot de passe</span>
+        </div>
+        <div class="settings-menu-item" data-target="system-settings">
+          <i class="fas fa-sliders-h"></i>
+          <span>Préférences Système</span>
+        </div>
+        <div class="settings-menu-item" data-target="notification-settings">
+          <i class="fas fa-bell"></i>
+          <span>Notifications</span>
+        </div>
+      </div>
+      
+      <!-- Contenu des paramètres -->
+      <div class="settings-content">
+        <!-- Section Compte Administrateur -->
+        <div class="settings-section active" id="account-settings">
+          <h2 class="settings-section-title">
+            <i class="fas fa-user-cog"></i>
+            Informations du compte
+          </h2>
+          
+          <form id="accountForm">
+            <div class="form-group">
+              <label for="adminName" class="form-label">Nom complet</label>
+              <input type="text" id="adminName" class="form-control" value="Ismail Allouch">
+            </div>
+            
+            <div class="form-group">
+              <label for="adminEmail" class="form-label">Email</label>
+              <input type="email" id="adminEmail" class="form-control" value="admin@syndicpro.com">
+            </div>
+            
+            <div class="form-group">
+              <label for="adminPhone" class="form-label">Téléphone</label>
+              <input type="tel" id="adminPhone" class="form-control" value="+212 6 12 34 56 78">
+            </div>
+            
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save"></i> Enregistrer les modifications
+            </button>
+          </form>
+        </div>
+        
+        <!-- Section Mot de passe -->
+        <div class="settings-section" id="password-settings">
+          <h2 class="settings-section-title">
+            <i class="fas fa-lock"></i>
+            Modifier le mot de passe
+          </h2>
+          
+          <form id="passwordForm">
+            <div class="form-group">
+              <label for="currentPassword" class="form-label">Mot de passe actuel</label>
+              <input type="password" id="currentPassword" class="form-control">
+            </div>
+            
+            <div class="form-group">
+              <label for="newPassword" class="form-label">Nouveau mot de passe</label>
+              <input type="password" id="newPassword" class="form-control">
+              <div class="form-text">Minimum 8 caractères, avec des chiffres et lettres</div>
+            </div>
+            
+            <div class="form-group">
+              <label for="confirmPassword" class="form-label">Confirmer le nouveau mot de passe</label>
+              <input type="password" id="confirmPassword" class="form-control">
+            </div>
+            
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-key"></i> Changer le mot de passe
+            </button>
+          </form>
+        </div>
+        
+        <!-- Section Préférences Système -->
+        <div class="settings-section" id="system-settings">
+          <h2 class="settings-section-title">
+            <i class="fas fa-sliders-h"></i>
+            Préférences Système
+          </h2>
+          
+          <form id="systemForm">
+            <div class="form-group">
+              <label for="systemLanguage" class="form-label">Langue</label>
+              <select id="systemLanguage" class="form-control">
+                <option value="fr">Français</option>
+                <option value="en">English</option>
+                <option value="ar">العربية</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="systemTheme" class="form-label">Thème</label>
+              <select id="systemTheme" class="form-control">
+                <option value="light">Clair</option>
+                <option value="dark">Sombre</option>
+                <option value="auto">Automatique</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="timezone" class="form-label">Fuseau horaire</label>
+              <select id="timezone" class="form-control">
+                <option value="Africa/Casablanca">(GMT+1) Casablanca</option>
+                <option value="Europe/Paris">(GMT+2) Paris</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="dateFormat" class="form-label">Format de date</label>
+              <select id="dateFormat" class="form-control">
+                <option value="dd/MM/yyyy">JJ/MM/AAAA</option>
+                <option value="MM/dd/yyyy">MM/JJ/AAAA</option>
+                <option value="yyyy-MM-dd">AAAA-MM-JJ</option>
+              </select>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save"></i> Enregistrer les préférences
+            </button>
+          </form>
+        </div>
+        
+        <!-- Section Notifications -->
+        <div class="settings-section" id="notification-settings">
+          <h2 class="settings-section-title">
+            <i class="fas fa-bell"></i>
+            Paramètres de notification
+          </h2>
+          
+          <form id="notificationForm">
+            <div class="notification-item">
+              <div class="notification-info">
+                <div class="notification-title">Notifications par email</div>
+                <div class="notification-desc">Recevoir des notifications importantes par email</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+            
+            <div class="notification-item">
+              <div class="notification-info">
+                <div class="notification-title">Alertes de paiement</div>
+                <div class="notification-desc">Recevoir des alertes pour les paiements en retard</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+            
+            <div class="notification-item">
+              <div class="notification-info">
+                <div class="notification-title">Demandes de maintenance</div>
+                <div class="notification-desc">Notifications pour les nouvelles demandes</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+            
+            <div class="notification-item">
+              <div class="notification-info">
+                <div class="notification-title">Rappels d'événements</div>
+                <div class="notification-desc">Rappels pour les événements à venir</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox">
+                <span class="slider"></span>
+              </label>
+            </div>
+            
+            <div class="notification-item">
+              <div class="notification-info">
+                <div class="notification-title">Notifications système</div>
+                <div class="notification-desc">Alertes et mises à jour du système</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="margin-top: 20px;">
+              <i class="fas fa-save"></i> Enregistrer les paramètres
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Navigation entre les sections de paramètres
+      const menuItems = document.querySelectorAll('.settings-menu-item');
+      
+      menuItems.forEach(item => {
+        item.addEventListener('click', function() {
+          // Retirer la classe active de tous les éléments
+          menuItems.forEach(i => i.classList.remove('active'));
+          document.querySelectorAll('.settings-section').forEach(s => s.classList.remove('active'));
+          
+          // Ajouter la classe active à l'élément cliqué
+          this.classList.add('active');
+          
+          // Afficher la section correspondante
+          const target = this.getAttribute('data-target');
+          document.getElementById(target).classList.add('active');
+        });
+      });
+      
+      // Gestion des formulaires
+      const forms = document.querySelectorAll('form');
+      forms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          // Ici, vous ajouteriez la logique pour sauvegarder les paramètres
+          alert('Paramètres enregistrés avec succès !');
+        });
+      });
+      
+      // Initialiser les valeurs des préférences (simulé)
+      document.getElementById('systemLanguage').value = 'fr';
+      document.getElementById('systemTheme').value = 'light';
+      document.getElementById('timezone').value = 'Africa/Casablanca';
+      document.getElementById('dateFormat').value = 'dd/MM/yyyy';
+    });
+  </script>
+</body>
+</html>

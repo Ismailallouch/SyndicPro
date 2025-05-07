@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rapports & Statistiques - SyndicPro</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --primary-color: #2a5298;
+      --primary-light: #3a67b6;
+      --primary-dark: #1c3c76;
+      --accent-color: #00c6ff;
+      --secondary-color: #4CAF50;
+      --warning-color: #FFC107;
+      --danger-color: #F44336;
+      --text-color: #333;
+      --text-light: #666;
+      --text-muted: #999;
+      --background-color: #f4f7fa;
+      --background-light: #ffffff;
+      --border-color: #e1e5eb;
+      --transition: all 0.4s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: var(--background-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    .main-content {
+      flex: 1;
+      margin-left: 260px;
+      padding: 20px;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+
+    .top-bar-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .search-box {
+      position: relative;
+    }
+
+    .search-input {
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 8px 15px 8px 35px;
+      background-color: var(--background-light);
+      font-size: 14px;
+      outline: none;
+      transition: var(--transition);
+      width: 240px;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .rapport-section {
+      background-color: var(--background-light);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .rapport-section h2 {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+
+    .rapport-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .rapport-list button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      font-size: 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .rapport-list button:hover {
+      background-color: var(--primary-light);
+    }
+
+    .rapport-list button i {
+      margin-left: 10px;
+    }
+
+    .rapport-content {
+      display: none;
+      padding: 20px;
+      background-color: var(--background-light);
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .stats-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
+
+    .stats-table th,
+    .stats-table td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .stats-table th {
+      font-weight: 500;
+      color: var(--text-light);
+      font-size: 14px;
+    }
+
+    .stats-table td {
+      font-size: 14px;
+    }
+
+    .stats-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .stats-table tr:hover {
+      background-color: rgba(244, 247, 250, 0.5);
+    }
+
+    .chart-container {
+      margin-top: 30px;
+    }
+    canvas {
+      max-width: 100%;
+      height: 400px;
+    }
+     /* Sidebar styles */
+     .sidebar {
+      width: 260px;
+      height: 100vh;
+      background-color: var(--background-light);
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      border-radius: 10px;
+      margin-right: 12px;
+    }
+    
+    .logo-icon {
+      font-size: 20px;
+      color: white;
+    }
+    
+    .brand-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+    
+    .brand-name span {
+      color: var(--accent-color);
+    }
+    
+    .sidebar-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 0;
+    }
+    
+    .menu-label {
+      text-transform: uppercase;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding: 10px 20px;
+      margin-top: 15px;
+    }
+    
+    .menu-items {
+      list-style: none;
+    }
+    
+    .menu-item {
+      margin-bottom: 5px;
+    }
+    
+    .menu-link {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: var(--text-color);
+      text-decoration: none;
+      transition: var(--transition);
+      border-left: 3px solid transparent;
+    }
+    
+    .menu-link:hover {
+      background-color: rgba(42, 82, 152, 0.05);
+    }
+    
+    .menu-link.active {
+      border-left-color: var(--primary-color);
+      background-color: rgba(42, 82, 152, 0.08);
+      color: var(--primary-color);
+    }
+    
+    .menu-icon {
+      font-size: 18px;
+      margin-right: 12px;
+      width: 24px;
+      text-align: center;
+    }
+    
+    .sidebar-footer {
+      padding: 15px 20px;
+      border-top: 1px solid var(--border-color);
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+    }
+    
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #e0e0e0, #c0c0c0);
+      margin-right: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: var(--text-color);
+    }
+    
+    .user-details {
+      flex: 1;
+    }
+    
+    .user-name {
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .user-role {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    
+    .logout-btn {
+      margin-left: 10px;
+      color: var(--text-light);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: var(--transition);
+    }
+    
+    .logout-btn:hover {
+      color: var(--danger-color);
+    }
+  </style>
+</head>
+<body>
+     <!-- Sidebar ca c'est pour le logo  --> 
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-container">
+        <i class="fas fa-city logo-icon"></i>
+      </div>
+      <div class="brand-name">Syndic<span>Pro</span></div>
+    </div>
+    
+    <div class="sidebar-content">
+      <p class="menu-label">Principal</p>
+      <ul class="menu-items">
+        <li class="menu-item">
+          <a href="dashboard.html" class="menu-link ">
+            <i class="fas fa-home menu-icon"></i>
+            <span class="menu-text">Dashboard</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="Copropriétaires.html" class="menu-link">
+            <i class="fas fa-users menu-icon"></i>
+            <span class="menu-text">Copropriétaires</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="lots.html" class="menu-link"><!--abdelali hna khass thet le nom d la page dialek f blast # de meme chose pour l'okhrin-->
+            <i class="fas fa-building menu-icon"></i>
+            <span class="menu-text">Lots</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="Charges_Paiements.html" class="menu-link">
+            <i class="fas fa-file-invoice-dollar menu-icon"></i>
+            <span class="menu-text">Charges & Paiements</span>
+          </a>
+        </li>
+      </ul>
+      
+      <p class="menu-label">Gestion</p>
+      <ul class="menu-items">
+        <li class="menu-item">
+          <a href="Demandes_de_maintenance.html" class="menu-link">
+            <i class="fas fa-tools menu-icon"></i>
+            <span class="menu-text">Demandes de maintenance</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="evenement.html" class="menu-link">
+            <i class="fas fa-calendar-alt menu-icon"></i>
+            <span class="menu-text">Événements</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+      <p class="menu-label">Rapports</p>
+      <ul class="menu-items">
+        <li class="menu-item">
+          <a href="statistiques.html" class="menu-link active">
+            <i class="fas fa-chart-pie menu-icon"></i>
+            <span class="menu-text">Statistiques</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="Paramètres.html" class="menu-link">
+            <i class="fas fa-cog menu-icon"></i>
+            <span class="menu-text">Paramètres</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="user-details">
+          <div class="user-name">Ismail Allouch</div>
+          <div class="user-role">Administrateur</div>
+        </div>
+        <a href="logout.html" class="logout-btn" title="Déconnexion">
+          <i class="fas fa-sign-out-alt"></i>
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="top-bar">
+      <h1 class="page-title">Rapports & Statistiques</h1>
+      <div class="top-bar-actions">
+       
+      </div>
+    </div>
+
+    <div class="rapport-section">
+      <h2>Rapports Disponibles</h2>
+      <div class="rapport-list">
+        <button onclick="showReport('revenu')">
+          Revenu total collecté <i class="fas fa-arrow-right"></i>
+        </button>
+        <button onclick="showReport('soldes')">
+          Soldes impayés <i class="fas fa-arrow-right"></i>
+        </button>
+        <button onclick="showReport('demandes')">
+          Demandes résolues au fil du temps <i class="fas fa-arrow-right"></i>
+        </button>
+        <button onclick="exportToCSV()">
+          Exporter en CSV/Excel <i class="fas fa-download"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Rapport Content -->
+    <div id="revenuReport" class="rapport-content">
+      <h3>Revenu total collecté</h3>
+      <p>Détails sur le revenu total collecté...</p>
+    </div>
+
+    <div id="soldesReport" class="rapport-content">
+      <h3>Soldes impayés</h3>
+      <table class="stats-table">
+        <thead>
+          <tr>
+            <th>Copropriétaire</th>
+            <th>Solde Dû</th>
+            <th>Dernier Paiement</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>J. Dubois</td>
+            <td>250€</td>
+            <td>01/04/2025</td>
+          </tr>
+          <tr>
+            <td>M. Martin</td>
+            <td>575€</td>
+            <td>15/03/2025</td>
+          </tr>
+          <tr>
+            <td>P. Dupont</td>
+            <td>0€</td>
+            <td>31/03/2025</td>
+          </tr>
+          <tr>
+            <td>S. Durand</td>
+            <td>325€</td>
+            <td>20/03/2025</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="demandesReport" class="rapport-content">
+      <h3>Demandes résolues au fil du temps</h3>
+      <p>Détails sur les demandes résolues...</p>
+    </div>
+
+    <!-- Graphiques -->
+    <div class="chart-container">
+      <h3>Graphique des Soldes Dûs</h3>
+      <canvas id="balanceChart"></canvas>
+    </div>
+
+  </main>
+
+  <script>
+    // Show the corresponding report when a button is clicked
+    function showReport(type) {
+      // Hide all reports
+      const reports = document.querySelectorAll('.rapport-content');
+      reports.forEach(report => {
+        report.style.display = 'none';
+      });
+
+      // Show the clicked report
+      const reportToShow = document.getElementById(type + 'Report');
+      if (reportToShow) {
+        reportToShow.style.display = 'block';
+      }
+    }
+
+    // Function to export the data to CSV/Excel
+    function exportToCSV() {
+      let csv = "Copropriétaire,Solde Dû,Dernier Paiement\n";
+      const data = [
+        { owner: "J. Dubois", amountDue: 250, lastPayment: "01/04/2025" },
+        { owner: "M. Martin", amountDue: 575, lastPayment: "15/03/2025" },
+        { owner: "P. Dupont", amountDue: 0, lastPayment: "31/03/2025" },
+        { owner: "S. Durand", amountDue: 325, lastPayment: "20/03/2025" }
+      ];
+      data.forEach(report => {
+        csv += `${report.owner},${report.amountDue}€,${report.lastPayment}\n`;
+      });
+
+      const hiddenElement = document.createElement('a');
+      hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+      hiddenElement.target = '_blank';
+      hiddenElement.download = 'rapports.csv';
+      hiddenElement.click();
+    }
+
+    // Chart for balance dues
+    document.addEventListener('DOMContentLoaded', () => {
+      const ctx = document.getElementById('balanceChart').getContext('2d');
+      const balanceChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['J. Dubois', 'M. Martin', 'P. Dupont', 'S. Durand'],
+          datasets: [{
+            label: 'Solde Dû (€)',
+            data: [250, 575, 0, 325],
+            backgroundColor: 'rgba(42, 82, 152, 0.3)',
+            borderColor: 'rgba(42, 82, 152, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

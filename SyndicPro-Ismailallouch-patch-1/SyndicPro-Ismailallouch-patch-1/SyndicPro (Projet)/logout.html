@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Déconnexion - SyndicPro</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #2a5298;
+      --primary-light: #3a67b6;
+      --danger-color: #F44336;
+      --text-color: #333;
+      --background-color: #f4f7fa;
+      --background-light: #ffffff;
+      --border-color: #e1e5eb;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    body {
+      background-color: var(--background-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .logout-container {
+      background-color: var(--background-light);
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 450px;
+      padding: 40px;
+      text-align: center;
+    }
+    
+    .logout-icon {
+      font-size: 48px;
+      color: var(--danger-color);
+      margin-bottom: 20px;
+    }
+    
+    .logout-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+    
+    .logout-message {
+      color: #666;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+    
+    .logout-btn {
+        text-decoration: none;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .logout-btn:hover {
+      background-color: var(--primary-light);
+      transform: translateY(-2px);
+    }
+    
+    .logout-footer {
+      margin-top: 30px;
+      font-size: 14px;
+      color: #999;
+    }
+    
+    .logout-footer a {
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+    
+    .logout-footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="logout-container">
+    <div class="logout-icon">
+      <i class="fas fa-sign-out-alt"></i>
+    </div>
+    <h1 class="logout-title">Déconnexion</h1>
+    <p class="logout-message">Vous êtes sur le point de vous déconnecter de votre session administrateur. Assurez-vous d'avoir sauvegardé tous les changements en cours.</p>
+    
+    <a  href="index.html" id="logoutButton" class="logout-btn">
+      <i class="fas fa-sign-out-alt"></i>
+      Confirmer la déconnexion
+    <a>
+    
+    <div class="logout-footer">
+      <a href="dashboard.html" id="cancelLogout"><i class="fas fa-arrow-left"></i> Retour au tableau de bord</a>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Gestion de la déconnexion
+      const logoutButton = document.getElementById('logoutButton');
+      const cancelLogout = document.getElementById('cancelLogout');
+      
+      // Fonction de déconnexion
+      function performLogout() {
+        // Afficher un indicateur de chargement
+        logoutButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Déconnexion en cours...';
+        logoutButton.disabled = true;
+        
+        // Appel API pour déconnexion (méthode POST comme recommandé)
+        fetch('/api/auth/logout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          }
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Erreur lors de la déconnexion');
+          }
+          return response.json();
+        })
+        .then(data => {
+          // Suppression du token local (bonne pratique #9)
+          localStorage.removeItem('authToken');
+          
+          // Redirection vers la page de login
+          window.location.href = '/index.html';
+        })
+        
+      }
+      
+      // Annulation de la déconnexion
+      function cancelLogoutAction() {
+        window.location.href = '/dashboard.html';
+
+      }
+      
+      // Écouteurs d'événements
+      logoutButton.addEventListener('click', performLogout);
+      cancelLogout.addEventListener('click', cancelLogoutAction);
+      
+      // Gestion du timeout d'inactivité (bonne pratique #8)
+      let inactivityTimer;
+      const resetTimer = () => {
+        clearTimeout(inactivityTimer);
+        inactivityTimer = setTimeout(() => {
+          alert('Vous allez être déconnecté pour cause d\'inactivité.');
+          performLogout();
+        }, 1800000); // 30 minutes
+      };
+      
+      // Réinitialiser le timer sur les événements utilisateur
+      window.onload = resetTimer;
+      window.onmousemove = resetTimer;
+      window.onmousedown = resetTimer;
+      window.ontouchstart = resetTimer;
+      window.onclick = resetTimer;
+      window.onkeypress = resetTimer;
+    });
+  </script>
+</body>
+</html>
