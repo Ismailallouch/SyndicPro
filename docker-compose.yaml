@@ -1,0 +1,29 @@
+services:
+  app:
+    build: .
+    container_name: syndicPro
+    env_file: .env
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - NODE_ENV=development
+      - PORT=${PORT}
+    ports:
+      - "7000:7000"
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+  db:
+    image: postgres:13-alpine
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: syndicPro
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+volumes:
+  postgres-data:

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="signup.css">
+</head>
+<body>
+    <div class="container">
+        <div class="signup-box">
+            <h2>Sign Up</h2>
+            <form id="signupForm">
+                <div class="input-box">
+                    <input type="text" id="username" required>
+                    <label>Username</label>
+                </div>
+                <div class="input-box">
+                    <input type="email" id="email" required>
+                    <label>Email</label>
+                </div>
+                <div class="input-box">
+                    <input type="password" id="password" required>
+                    <label>Password</label>
+                </div>
+                <div class="input-box">
+                    <input type="password" id="confirmPassword" required>
+                    <label>Confirm Password</label>
+                </div>
+                <div id="message" class="message"></div>
+                <button type="submit" class="btn">Sign Up</button>
+                <div class="login-link">
+                    <p>Already have an account? <a href="index.html">Login</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const messageEl = document.getElementById('message');
+            
+            // Validation des mots de passe
+            if (password !== confirmPassword) {
+                messageEl.textContent = 'Passwords do not match!';
+                messageEl.style.color = '#ff3333';
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:7000/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        email: email,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    messageEl.textContent = 'Registration successful! Redirecting...';
+                    messageEl.style.color = '#0ef';
+                    
+                    // Stockage du token et redirection
+                    localStorage.setItem('authToken', data.token);
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
+                } else {
+                    messageEl.textContent = data.message || 'Registration failed';
+                    messageEl.style.color = '#ff3333';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                messageEl.textContent = 'Network error. Please try again.';
+                messageEl.style.color = '#ff3333';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,369 @@
+### 1. Test du endpoint racine
+GET http://localhost:7000/
+
+
+### 2. Enregistrement d'un nouvel admin
+POST http://localhost:7000/auth/register
+Content-Type: application/json
+
+{
+    "username": "Admin1",
+    "email": "admin1@example.com",
+    "password": "secret123"
+}
+
+
+### 3. Login de l'admin
+POST http://localhost:7000/auth/login
+Content-Type: application/json
+
+{
+    "email": "admin1@example.com",
+    "password": "secret123"
+}
+
+
+### 4. Récupérer tous les copropriétaires (protégé)
+GET http://localhost:7000/copro/
+Authorization: {{token}}
+
+### 5. Créer un nouveau copropriétaire (protégé)
+POST http://localhost:7000/copro/
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+    "nom": "Dupnt",
+    "email": "dupnt@example.com",
+    "telephone": "0712345678"
+}
+
+
+### 6. Mettre à jour un copropriétaire (protégé)
+PUT http://localhost:7000/copro/1
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzQ3NjY1ODEzLCJleHAiOjE3NDc3NTIyMTN9.19SRj1wn6Rz_fGli4sBZTfIJVefnh5dhcHtXEz6bDPg
+Content-Type: application/json
+
+{
+    "nom": "Dupont Modifié",
+    "email": "dupont.modifie@example.com",
+    "telephone": "0698765432"
+}
+
+
+### 7. Supprimer un copropriétaire (protégé)
+DELETE http://localhost:7000/copro/2
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzQ3NjY1ODEzLCJleHAiOjE3NDc3NTIyMTN9.19SRj1wn6Rz_fGli4sBZTfIJVefnh5dhcHtXEz6bDPg
+
+
+### 8. Tentative d'accès non autorisé (sans token)
+GET http://localhost:7000/copro/
+
+
+### 9. Tentative avec un token invalide
+GET http://localhost:7000/copro/
+Authorization: Bearer token.invalide.123
+
+
+
+### --------------------------------------------------------------------------------------------------
+### tests pour le module Lots
+### --------------------------------------------------------------------------------------------------
+
+### 2. Enregistrement d'un nouvau lot
+POST http://localhost:7000/lots/
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+    "numeroLot": "A103",
+    "etage": "1",
+    "taille": "50",
+    "type": "Appartement",
+    "emailCoproprietaire": "dupnt@example.com"
+}
+
+
+### 4. Récupérer tous les lots (protégé)
+GET http://localhost:7000/lots/
+Authorization: {{token}}
+
+### 6. Mettre à jour un lot (protégé)
+PUT http://localhost:7000/lots/1
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzQ3NjkxNTg4LCJleHAiOjE3NDc3Nzc5ODh9.qIBBi4CQxPoDK8TpjXOIngrrN3H_2_mCpanskpSN2tM
+
+{
+    "numeroLot": "A101",
+    "etage": "1",
+    "taille": "500",
+    "type": "Appartement",
+    "emailCoproprietaire": "dupnt@example.com"
+}
+
+
+### 7. Supprimer un lot (protégé)
+DELETE http://localhost:7000/lots/1
+Authorization: 
+
+
+### --------------------------------------------------------------------------------------------------
+
+
+### 0. Enregistrement d'un nouvel admin
+POST http://localhost:7000/auth/register
+Content-Type: application/json
+
+{
+    "username": "Admin1",
+    "email": "admin1@example.com",
+    "password": "secret123"
+}
+
+
+### 0. Login de l'admin
+POST http://localhost:7000/auth/login
+Content-Type: application/json
+
+{
+    "email": "admin1@example.com",
+    "password": "secret123"
+}
+
+### 1. Récupérer toutes les charges (protégé)
+GET http://localhost:7000/charges/
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzQ3NzU1MDAwLCJleHAiOjE3NDc4NDE0MDB9.V4EZGBIEESSwu_HVUSaM8V_dc2Jw-6eXFEKQ7v4IvEs
+
+
+### 2. Créer une charge pour un copropriétaire spécifique
+POST http://localhost:7000/charges/
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzQ3NzU1MDAwLCJleHAiOjE3NDc4NDE0MDB9.V4EZGBIEESSwu_HVUSaM8V_dc2Jw-6eXFEKQ7v4IvEs
+
+{
+    "type": "Travaux ascenseur",
+    "montant": 12000,
+    "echeance": "2023-12-31",
+    "statut": "à payer",
+    "coproprietaire": "dupnt@example.com"
+}
+
+
+### 3. Créer une charge pour tous les copropriétaires
+POST http://localhost:7000/charges/
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzQ3NzU1MDAwLCJleHAiOjE3NDc4NDE0MDB9.V4EZGBIEESSwu_HVUSaM8V_dc2Jw-6eXFEKQ7v4IvEs
+
+{
+    "type": "Charges générales",
+    "montant": 3500,
+    "echeance": "2023-12-15",
+    "statut": "payé",
+    "coproprietaire": "tous"
+}
+
+
+### 4. Créer une charge déjà payée
+POST http://localhost:7000/charges/
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzQ3NzU1MDAwLCJleHAiOjE3NDc4NDE0MDB9.V4EZGBIEESSwu_HVUSaM8V_dc2Jw-6eXFEKQ7v4IvEs
+
+{
+    "type": "Nettoyage",
+    "montant": 450,
+    "echeance": "2023-11-30",
+    "statut": "Payé",
+    "coproprietaire": "martin@example.com"
+}
+
+
+### 5. Mettre à jour une charge
+PUT http://localhost:7000/charges/4
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzQ3NzU1MDAwLCJleHAiOjE3NDc4NDE0MDB9.V4EZGBIEESSwu_HVUSaM8V_dc2Jw-6eXFEKQ7v4IvEs
+
+{
+    "type": "Travaux ascenseur urgent",
+    "montant": 1500,
+    "echeance": "2023-12-10",
+    "statut": "En retard",
+    "coproprietaire": "dupnt@example.com"
+}
+
+
+### 6. Enregistrer un paiement pour une charge
+POST http://localhost:7000/charges/5/payer
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzQ3NzU1MDAwLCJleHAiOjE3NDc4NDE0MDB9.V4EZGBIEESSwu_HVUSaM8V_dc2Jw-6eXFEKQ7v4IvEs
+
+{
+    "coproprietaire": "dupnt@example.com",
+    "montantPaye": 1500
+}
+
+
+### 7. Supprimer une charge
+DELETE http://localhost:7000/charges/10
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzQ3NzU1MDAwLCJleHAiOjE3NDc4NDE0MDB9.V4EZGBIEESSwu_HVUSaM8V_dc2Jw-6eXFEKQ7v4IvEs
+
+
+### 8. Essai avec données invalides (devrait échouer)
+POST http://localhost:7000/charges/
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzQ3NzU1MDAwLCJleHAiOjE3NDc4NDE0MDB9.V4EZGBIEESSwu_HVUSaM8V_dc2Jw-6eXFEKQ7v4IvEs
+
+{
+    "type": "",
+    "montant": -100,
+    "echeance": "2023-12-31",
+    "statut": "invalide",
+    "coproprietaire": "inexistant@example.com"
+}
+
+
+### --------------------------------------------------------------------------------------------------
+### tests pour le module Maintenance
+### --------------------------------------------------------------------------------------------------
+
+### 0. Enregistrement d'un nouvel admin (si nécessaire)
+POST http://localhost:7000/auth/register
+Content-Type: application/json
+
+{
+    "username": "AdminMaintenance",
+    "email": "admin.maintenance@example.com",
+    "password": "maintenance123"
+}
+
+### 0. Login de l'admin
+POST http://localhost:7000/auth/login
+Content-Type: application/json
+
+{
+    "email": "admin.maintenance@example.com",
+    "password": "maintenance123"
+}
+
+### Stocker le token JWT pour les requêtes suivantes
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzQ3OTEzMTEyLCJleHAiOjE3NDc5OTk1MTJ9.xUYXPbWHu-A23-1PemfuIr2DuRCp-tUpXGzX-bOGn_U
+### 1. Récupérer toutes les maintenances (vide au départ)
+GET http://localhost:7000/maintenance/
+Authorization: {{token}}
+
+### 2. Créer une maintenance avec un lot spécifique
+POST http://localhost:7000/maintenance/
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+    "probleme": "Fuite d'eau dans l'ascenseur",
+    "date": "2023-11-15",
+    "priorite": "Haute",
+    "statut": "En cours",
+    "lots": [1]
+}
+
+### 3. Créer une maintenance avec plusieurs lots
+POST http://localhost:7000/maintenance/
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+    "probleme": "Problème électrique commun",
+    "date": "2023-11-16",
+    "priorite": "Urgente",
+    "statut": "A faire",
+    "lots": [1, 2, 3]
+}
+
+### 4. Récupérer toutes les maintenances (maintenant avec données)
+GET http://localhost:7000/maintenance/
+Authorization: {{token}}
+
+### 5. Récupérer une maintenance spécifique
+GET http://localhost:7000/maintenance/1
+Authorization: {{token}}
+
+### 6. Mettre à jour une maintenance
+PUT http://localhost:7000/maintenance/1
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+    "probleme": "Fuite d'eau dans l'ascenseur (URGENT)",
+    "date": "2023-11-15",
+    "priorite": "Urgente",
+    "statut": "En cours",
+    "lots": [1, 3]
+}
+
+### 7. Vérifier la mise à jour
+GET http://localhost:7000/maintenance/1
+Authorization: {{token}}
+
+### 8. Créer une maintenance avec statut résolu
+POST http://localhost:7000/maintenance/
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+    "probleme": "Porte d'entrée bloquée",
+    "date": "2023-11-10",
+    "priorite": "Moyenne",
+    "statut": "Résolu",
+    "lots": [2]
+}
+
+### 9. Filtrer les maintenances par statut (exemple pour frontend)
+GET http://localhost:7000/maintenance/?statut=Résolu
+Authorization: {{token}}
+
+### 10. Supprimer une maintenance
+DELETE http://localhost:7000/maintenance/2
+Authorization: {{token}}
+
+### 11. Vérifier la suppression (devrait retourner 404)
+GET http://localhost:7000/maintenance/2
+Authorization: {{token}}
+
+### 12. Essai avec données invalides (devrait échouer)
+POST http://localhost:7000/maintenance/
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+    "probleme": "",
+    "date": "2023-11-15",
+    "priorite": "Invalide",
+    "statut": "",
+    "lots": []
+}
+
+### 13. Essai de modification avec lots inexistants (devrait échouer)
+PUT http://localhost:7000/maintenance/1
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+    "probleme": "Test échec",
+    "date": "2023-11-15",
+    "priorite": "Haute",
+    "statut": "En cours",
+    "lots": [999]
+}
+
+### 14. Essai de suppression d'une maintenance inexistante (devrait échouer)
+DELETE http://localhost:7000/maintenance/999
+Authorization: {{token}}
+
+### 15. Créer une maintenance sans token (devrait échouer)
+POST http://localhost:7000/maintenance/
+Content-Type: application/json
+
+{
+    "probleme": "Test sans auth",
+    "date": "2023-11-15",
+    "priorite": "Haute",
+    "statut": "En cours",
+    "lots": [1]
+}

@@ -1,0 +1,91 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  idAdmin    Int      @id @default(autoincrement())
+  username   String   @db.VarChar(70)
+  email      String   @unique @db.VarChar(70)
+  phone      String?  @unique @db.VarChar(20)
+  password   String   @db.VarChar(70)
+  coproprietaires Coproprietaire[]
+  charges    Charge[]
+  events     Evenement[]
+  maintenances Maintenance[]
+}
+
+model Coproprietaire {
+  idCopro    Int      @id @default(autoincrement())
+  nom        String   @db.VarChar(70)
+  email      String   @unique @db.VarChar(70)
+  phone      String   @unique @db.VarChar(20)
+  idAdmin    Int
+  admin      Admin    @relation(fields: [idAdmin], references: [idAdmin])
+  lots       Lot[]
+  paiements  Payer[]
+}
+
+model Charge {
+  idCharge   Int      @id @default(autoincrement())
+  typeCharge String   @db.VarChar(70)
+  montant    Float
+  statut     String   @db.VarChar(30)
+  echeance   DateTime
+  idAdmin    Int
+  admin      Admin    @relation(fields: [idAdmin], references: [idAdmin])
+  paiements  Payer[]
+}
+
+model Payer {
+  idPayer      Int       @id @default(autoincrement())
+  idCharge     Int
+  charge       Charge    @relation(fields: [idCharge], references: [idCharge])
+  idCopro      Int?
+  coproprietaire Coproprietaire? @relation(fields: [idCopro], references: [idCopro])
+  datePaiement DateTime?
+  montantPaye  Float?
+}
+
+model Evenement {
+  idEvent    Int      @id @default(autoincrement())
+  nomEvent   String   @db.VarChar(70)
+  date       DateTime
+  lieu       String   @db.VarChar(100)
+  idAdmin    Int
+  admin      Admin    @relation(fields: [idAdmin], references: [idAdmin])
+}
+
+model Lot {
+  idLot      Int      @id @default(autoincrement())
+  numeroLot  String   @unique @db.VarChar(20)
+  etage      String   @db.VarChar(10)
+  taille     Float
+  type       String?  @db.VarChar(30)
+  idCopro    Int?
+  coproprietaire Coproprietaire? @relation(fields: [idCopro], references: [idCopro])
+  maintenances Maintenir[]
+}
+
+model Maintenance {
+  idMaintenance Int       @id @default(autoincrement())
+  probleme      String
+  date          DateTime
+  priorite      String?   @db.VarChar(10)
+  statut        String?   @db.VarChar(20)
+  idAdmin       Int
+  admin         Admin     @relation(fields: [idAdmin], references: [idAdmin])
+  lots          Maintenir[]
+}
+
+model Maintenir {
+  idLot         Int
+  lot           Lot        @relation(fields: [idLot], references: [idLot])
+  idMaintenance Int
+  maintenance   Maintenance @relation(fields: [idMaintenance], references: [idMaintenance])
+  @@id([idLot, idMaintenance])
+}
