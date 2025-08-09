@@ -69,25 +69,32 @@ This application solves real-world problems for property administrators by:
 
 SyndicPro provides a complete dockerized environment that simplifies deployment and ensures consistency across different development machines. This installation process will create a fully functional property management system with sample data, ready for immediate use or customization.
 
-1. **Build the containers**:
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/[username]/syndicpro.git
+   cd syndicpro
+   ```
+   *Or download the complete SyndicPro source code from GitHub and navigates into the project directory where all configuration files are located*
+
+2. **Build the containers**:
    ```bash
    docker compose build
    ```
    *Creates optimized Docker images for both the Node.js backend and PostgreSQL database, ensuring all dependencies are properly configured and isolated*
 
-2. **Initialize the database schema**:
+3. **Initialize the database schema**:
    ```bash
    docker compose run app npx prisma migrate dev --name init
    ```
    *Establishes the complete database structure using Prisma migrations, creating all necessary tables for co-owners, lots, payments, and maintenance requests with proper relationships and constraints*
 
-3. **Seed sample data**:
+4. **Seed sample data**:
    ```bash
    docker compose exec db psql -U postgres -d syndicPro -f seeds/01_seed.sql
    ```
    *Populates your database with realistic test data including sample co-owners, property lots, payment records, and maintenance requests - perfect for exploring features or demonstrating the system*
 
-4. **Launch the system**:
+5. **Launch the system**:
    ```bash
    docker compose up -d
    ```
