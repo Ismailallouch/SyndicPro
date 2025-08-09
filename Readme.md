@@ -9,7 +9,7 @@
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)
 ![License](https://img.shields.io/badge/License-MIT-success)
 
-SyndicPro is a full-stack property management application designed to help building administrators efficiently manage co-ownership properties. Built with modern web technologies, it provides a complete solution with intuitive dashboards and data visualization.
+SyndicPro is a comprehensive full-stack property management system specifically engineered to streamline operations for building administrators and co-ownership property managers. This robust application combines powerful backend functionality with an intuitive user interface to deliver complete oversight of all property management needs. Built using cutting-edge web technologies including Node.js, PostgreSQL, Docker and modern JavaScript, the platform offers enterprise-grade capabilities with user-friendly dashboards, real-time data visualization tools, and automated reporting features.
 
 ## ✨ Why This Project Matters
 
@@ -60,8 +60,8 @@ This application solves real-world problems for property administrators by:
    - Auto-seeding on first run
 
 ### Prerequisites
-- Docker 20.10+
-- Docker Compose
+- 🐳 Docker 20.10+
+- 🐙🐳 Docker Compose
 
 ## 🚀 Installation Guide
 
