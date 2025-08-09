@@ -58,7 +58,6 @@ This application solves real-world problems for property administrators by:
 2. **Database Service** (`db`)
    - PostgreSQL 13 with persistent storage
    - Auto-seeding on first run
-   - Health-check enabled
 
 ### Prerequisites
 - Docker 20.10+
