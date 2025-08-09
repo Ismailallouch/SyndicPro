@@ -71,8 +71,7 @@ SyndicPro provides a complete dockerized environment that simplifies deployment 
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/[username]/syndicpro.git
-   cd syndicpro
+   git clone https://github.com/Ismailallouch/SyndicPro.git
    ```
    *Or download the complete SyndicPro source code from GitHub and navigates into the project directory where all configuration files are located*
 
