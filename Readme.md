@@ -138,9 +138,9 @@ These commands help you monitor, debug, and maintain your SyndicPro installation
 
 ## 👥 Development Team
 
-* **Lead Developer**: [Your Name] - System architecture & backend
-* **Frontend Specialist**: [Your Name] - UI/UX implementation  
-* **Database Engineer**: [Your Name] - Data modeling & optimization
+* Allouch Ismail
+* Abouchiba Mohamed Yassir
+* Kholty Abdelali
 
 ## 📜 License
 
