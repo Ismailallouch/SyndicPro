@@ -48,8 +48,6 @@ This application solves real-world problems for property administrators by:
 | Authentication | JWT                      |
 | Containers     | Docker, Docker Compose   |
 
-## 🐳 Docker Setup
-
 ### Services Architecture
 
 1. **Backend Service** (`app`)
@@ -66,15 +64,71 @@ This application solves real-world problems for property administrators by:
 
 ### Prerequisites
 - Docker 20.10+
-- Docker Compose 2.2+
+- Docker Compose
 
-### Installation
+## 🚀 Installation Guide
+
+### Set Up the Application
+
+1. **Build the containers**:
+   ```bash
+   docker compose build
+   ```
+   *Prepares the Docker images for both backend and database services*
+
+2. **Initialize the database schema**:
+   ```bash
+   docker compose run app npx prisma migrate dev --name init
+   ```
+   *Applies all database migrations using Prisma*
+
+3. **Seed sample data**:
+   ```bash
+   docker compose exec db psql -U postgres -d syndicPro -f seeds/01_seed.sql
+   ```
+   *Populates the database with initial test data including admin accounts*
+
+4. **Launch the system**:
+   ```bash
+   docker compose up -d
+   ```
+   *Starts all services in detached mode*
+
+## 🔌 Access the Application
+
+| Component | Access URL | Credentials |
+|-----------|------------|-------------|
+| Backend API | `http://localhost:7000` | JWT Authentication |
+| PostgreSQL DB | `localhost:5432` | User: `postgres`<br>Password: `postgres` |
+| Admin Account | N/A | Username: `user1`<br>Password: `1234` |
+
+## 🔧 Development Commands
+
 ```bash
-# Build and start containers
-docker compose up -d --build
+# Monitor application logs
+docker compose logs -f app
 
-# Initialize database
-docker compose run app npx prisma migrate dev --name init
+# Access database shell
+docker compose exec db psql -U postgres -d syndicPro
 
-# Seed sample data
-docker compose exec db psql -U postgres -d syndicPro -f seeds/01_seed.sql  
+# Run Prisma Studio (DB GUI)
+docker compose exec app npx prisma studio
+
+# Rebuild containers
+docker compose build --no-cache
+
+# Stop and remove everything
+docker compose down -v
+```
+
+## 👥 Development Team
+
+* **Lead Developer**: [Your Name] - System architecture & backend
+* **Frontend Specialist**: [Your Name] - UI/UX implementation  
+* **Database Engineer**: [Your Name] - Data modeling & optimization
+
+## 📜 License
+
+This project is licensed under the **MIT License** - see the LICENSE file for details.
+
+Permission is granted for free use, modification, and distribution provided the original copyright notice and license terms are included.
