@@ -1,977 +1,1021 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gestion des Événements - SyndicPro</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    :root {
-      --primary-color: #2a5298;
-      --primary-light: #3a67b6;
-      --primary-dark: #1c3c76;
-      --accent-color: #00c6ff;
-      --secondary-color: #4CAF50;
-      --warning-color: #FFC107;
-      --danger-color: #F44336;
-      --text-color: #333;
-      --text-light: #666;
-      --text-muted: #999;
-      --background-color: #f4f7fa;
-      --background-light: #ffffff;
-      --border-color: #e1e5eb;
-      --transition: all 0.4s ease;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestion des Événements - SyndicPro</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary-color: #2a5298;
+        --primary-light: #3a67b6;
+        --primary-dark: #1c3c76;
+        --accent-color: #00c6ff;
+        --secondary-color: #4caf50;
+        --warning-color: #ffc107;
+        --danger-color: #f44336;
+        --text-color: #333;
+        --text-light: #666;
+        --text-muted: #999;
+        --background-color: #f4f7fa;
+        --background-light: #ffffff;
+        --border-color: #e1e5eb;
+        --transition: all 0.4s ease;
+      }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
 
-    body {
-      background-color: var(--background-color);
-      color: var(--text-color);
-      min-height: 100vh;
-      display: flex;
-    }
+      body {
+        background-color: var(--background-color);
+        color: var(--text-color);
+        min-height: 100vh;
+        display: flex;
+      }
 
-    /* Sidebar styles */
-    .sidebar {
-      width: 260px;
-      height: 100vh;
-      background-color: var(--background-light);
-      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 10;
-      transition: var(--transition);
-      display: flex;
-      flex-direction: column;
-    }
+      /* Sidebar styles */
+      .sidebar {
+        width: 260px;
+        height: 100vh;
+        background-color: var(--background-light);
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 10;
+        transition: var(--transition);
+        display: flex;
+        flex-direction: column;
+      }
 
-    .sidebar-header {
-      display: flex;
-      align-items: center;
-      padding: 20px;
-      border-bottom: 1px solid var(--border-color);
-    }
+      .sidebar-header {
+        display: flex;
+        align-items: center;
+        padding: 20px;
+        border-bottom: 1px solid var(--border-color);
+      }
 
-    .logo-container {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-      border-radius: 10px;
-      margin-right: 12px;
-    }
+      .logo-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--accent-color)
+        );
+        border-radius: 10px;
+        margin-right: 12px;
+      }
 
-    .logo-icon {
-      font-size: 20px;
-      color: white;
-    }
+      .logo-icon {
+        font-size: 20px;
+        color: white;
+      }
 
-    .brand-name {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--primary-dark);
-    }
+      .brand-name {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--primary-dark);
+      }
 
-    .brand-name span {
-      color: var(--accent-color);
-    }
+      .brand-name span {
+        color: var(--accent-color);
+      }
 
-    .sidebar-content {
-      flex: 1;
-      overflow-y: auto;
-      padding: 20px 0;
-    }
+      .sidebar-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px 0;
+      }
 
-    .menu-label {
-      text-transform: uppercase;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-muted);
-      padding: 10px 20px;
-      margin-top: 15px;
-    }
+      .menu-label {
+        text-transform: uppercase;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--text-muted);
+        padding: 10px 20px;
+        margin-top: 15px;
+      }
 
-    .menu-items {
-      list-style: none;
-    }
+      .menu-items {
+        list-style: none;
+      }
 
-    .menu-item {
-      margin-bottom: 5px;
-    }
+      .menu-item {
+        margin-bottom: 5px;
+      }
 
-    .menu-link {
-      display: flex;
-      align-items: center;
-      padding: 12px 20px;
-      color: var(--text-color);
-      text-decoration: none;
-      transition: var(--transition);
-      border-left: 3px solid transparent;
-    }
+      .menu-link {
+        display: flex;
+        align-items: center;
+        padding: 12px 20px;
+        color: var(--text-color);
+        text-decoration: none;
+        transition: var(--transition);
+        border-left: 3px solid transparent;
+      }
 
-    .menu-link:hover {
-      background-color: rgba(42, 82, 152, 0.05);
-    }
+      .menu-link:hover {
+        background-color: rgba(42, 82, 152, 0.05);
+      }
 
-    .menu-link.active {
-      border-left-color: var(--primary-color);
-      background-color: rgba(42, 82, 152, 0.08);
-      color: var(--primary-color);
-    }
+      .menu-link.active {
+        border-left-color: var(--primary-color);
+        background-color: rgba(42, 82, 152, 0.08);
+        color: var(--primary-color);
+      }
 
-    .menu-icon {
-      font-size: 18px;
-      margin-right: 12px;
-      width: 24px;
-      text-align: center;
-    }
+      .menu-icon {
+        font-size: 18px;
+        margin-right: 12px;
+        width: 24px;
+        text-align: center;
+      }
 
-    .sidebar-footer {
-      padding: 15px 20px;
-      border-top: 1px solid var(--border-color);
-    }
+      .sidebar-footer {
+        padding: 15px 20px;
+        border-top: 1px solid var(--border-color);
+      }
 
-    /* Main content styles */
-    .main-content {
-      flex: 1;
-      margin-left: 260px;
-      padding: 20px;
-    }
-    
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-    }
-    
-    .page-title {
-      font-size: 24px;
-      font-weight: 600;
-      color: var(--primary-dark);
-    }
-    
-    .top-bar-actions {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-    
-    .search-box {
-      position: relative;
-    }
-    
-    .search-input {
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 8px 15px 8px 35px;
-      background-color: var(--background-light);
-      font-size: 14px;
-      outline: none;
-      transition: var(--transition);
-      width: 240px;
-    }
-    
-    .search-input:focus {
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
-    }
-    
-    .search-icon {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-muted);
-      font-size: 14px;
-    }
-    
-    .notification-btn {
-      position: relative;
-      background: none;
-      border: none;
-      color: var(--text-light);
-      font-size: 20px;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-    
-    .notification-btn:hover {
-      color: var(--primary-color);
-    }
-    
-    .notification-badge {
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      width: 16px;
-      height: 16px;
-      background-color: var(--danger-color);
-      border-radius: 50%;
-      color: white;
-      font-size: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    /* Copro content specific */
-    .action-buttons {
-      display: flex;
-      gap: 10px;
-    }
-    
-    .btn {
-      padding: 10px 16px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      border: none;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .btn-primary {
-      background-color: var(--primary-color);
-      color: white;
-    }
-    
-    .btn-primary:hover {
-      background-color: var(--primary-dark);
-    }
-    
-    .btn-outline {
-      background-color: transparent;
-      border: 1px solid var(--border-color);
-      color: var(--text-color);
-    }
-    
-    .btn-outline:hover {
-      background-color: var(--background-color);
-    }
-    
-    .card {
-      background-color: var(--background-light);
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-      margin-bottom: 30px;
-      overflow: hidden;
-    }
-    
-    .card-header {
-      padding: 20px;
-      border-bottom: 1px solid var(--border-color);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .card-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--primary-dark);
-    }
-    
-    .card-body {
-      padding: 20px;
-    }
-    
-    .coproprietaires-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    
-    .coproprietaires-table th,
-    .coproprietaires-table td {
-      padding: 15px;
-      text-align: left;
-      border-bottom: 1px solid var(--border-color);
-    }
-    
-    .coproprietaires-table th {
-      font-weight: 500;
-      color: var(--text-light);
-      font-size: 14px;
-    }
-    
-    .coproprietaires-table td {
-      font-size: 14px;
-    }
-    
-    .coproprietaires-table tr:last-child td {
-      border-bottom: none;
-    }
-    
-    .coproprietaires-table tr:hover {
-      background-color: rgba(244, 247, 250, 0.5);
-    }
-    
-    .action-cell {
-      text-align: right;
-    }
-    
-    .action-btn {
-      width: 32px;
-      height: 32px;
-      border-radius: 6px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border: none;
-      cursor: pointer;
-      font-size: 14px;
-      color: var(--text-light);
-      transition: var(--transition);
-      background-color: transparent;
-    }
-    
-    .action-btn:hover {
-      background-color: var(--background-color);
-      color: var(--primary-color);
-    }
-    
-    .action-btn.edit:hover {
-      color: var(--primary-color);
-    }
-    
-    .action-btn.delete:hover {
-      color: var(--danger-color);
-    }
+      /* Main content styles */
+      .main-content {
+        flex: 1;
+        margin-left: 260px;
+        padding: 20px;
+      }
 
-    /* Event content specific */
-    .event-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+      .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+      }
 
-    .event-table th,
-    .event-table td {
-      padding: 15px;
-      text-align: left;
-      border-bottom: 1px solid var(--border-color);
-    }
+      .page-title {
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--primary-dark);
+      }
 
-    .event-table th {
-      font-weight: 500;
-      color: var(--text-light);
-      font-size: 14px;
-    }
+      .top-bar-actions {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
 
-    .event-table td {
-      font-size: 14px;
-    }
+      .search-box {
+        position: relative;
+      }
 
-    .event-table tr:last-child td {
-      border-bottom: none;
-    }
+      .search-input {
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 8px 15px 8px 35px;
+        background-color: var(--background-light);
+        font-size: 14px;
+        outline: none;
+        transition: var(--transition);
+        width: 240px;
+      }
 
-    .event-table tr:hover {
-      background-color: rgba(244, 247, 250, 0.5);
-    }
+      .search-input:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+      }
 
-    .action-cell {
-      text-align: right;
-    }
+      .search-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-muted);
+        font-size: 14px;
+      }
 
-    /* Modal styles */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0, 0, 0, 0.5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 100;
-      opacity: 0;
-      visibility: hidden;
-      transition: var(--transition);
-    }
+      .notification-btn {
+        position: relative;
+        background: none;
+        border: none;
+        color: var(--text-light);
+        font-size: 20px;
+        cursor: pointer;
+        transition: var(--transition);
+      }
 
-    .modal-overlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
+      .notification-btn:hover {
+        color: var(--primary-color);
+      }
 
-    .modal {
-      background-color: var(--background-light);
-      border-radius: 12px;
-      width: 500px;
-      max-width: 90%;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      transform: translateY(-20px);
-      transition: var(--transition);
-    }
+      .notification-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        width: 16px;
+        height: 16px;
+        background-color: var(--danger-color);
+        border-radius: 50%;
+        color: white;
+        font-size: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
 
-    .modal-overlay.active .modal {
-      transform: translateY(0);
-    }
+      /* Copro content specific */
+      .action-buttons {
+        display: flex;
+        gap: 10px;
+      }
 
-    .modal-header {
-      padding: 20px;
-      border-bottom: 1px solid var(--border-color);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+      .btn {
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
 
-    .modal-title {
-      font-size: 18px;
-      font-weight: 600;
-    }
+      .btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+      }
 
-    .modal-close {
-      background: none;
-      border: none;
-      font-size: 20px;
-      color: var(--text-muted);
-      cursor: pointer;
-    }
+      .btn-primary:hover {
+        background-color: var(--primary-dark);
+      }
 
-    .modal-body {
-      padding: 20px;
-    }
+      .btn-outline {
+        background-color: transparent;
+        border: 1px solid var(--border-color);
+        color: var(--text-color);
+      }
 
-    .modal-footer {
-      border-top: 1px solid var(--border-color);
-      padding: 15px 20px;
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-    }
+      .btn-outline:hover {
+        background-color: var(--background-color);
+      }
 
-    .form-group {
-      margin-bottom: 20px;
-    }
+      .card {
+        background-color: var(--background-light);
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 30px;
+        overflow: hidden;
+      }
 
-    .form-label {
-      display: block;
-      margin-bottom: 8px;
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text-color);
-    }
+      .card-header {
+        padding: 20px;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
 
-    .form-control {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      font-size: 14px;
-      transition: var(--transition);
-    }
+      .card-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--primary-dark);
+      }
 
-    .form-control:focus {
-      outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
-    }
-     /* Sidebar styles */
-     .sidebar {
-      width: 260px;
-      height: 100vh;
-      background-color: var(--background-light);
-      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 10;
-      transition: var(--transition);
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .sidebar-header {
-      display: flex;
-      align-items: center;
-      padding: 20px;
-      border-bottom: 1px solid var(--border-color);
-    }
-    
-    .logo-container {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-      border-radius: 10px;
-      margin-right: 12px;
-    }
-    
-    .logo-icon {
-      font-size: 20px;
-      color: white;
-    }
-    
-    .brand-name {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--primary-dark);
-    }
-    
-    .brand-name span {
-      color: var(--accent-color);
-    }
-    
-    .sidebar-content {
-      flex: 1;
-      overflow-y: auto;
-      padding: 20px 0;
-    }
-    
-    .menu-label {
-      text-transform: uppercase;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-muted);
-      padding: 10px 20px;
-      margin-top: 15px;
-    }
-    
-    .menu-items {
-      list-style: none;
-    }
-    
-    .menu-item {
-      margin-bottom: 5px;
-    }
-    
-    .menu-link {
-      display: flex;
-      align-items: center;
-      padding: 12px 20px;
-      color: var(--text-color);
-      text-decoration: none;
-      transition: var(--transition);
-      border-left: 3px solid transparent;
-    }
-    
-    .menu-link:hover {
-      background-color: rgba(42, 82, 152, 0.05);
-    }
-    
-    .menu-link.active {
-      border-left-color: var(--primary-color);
-      background-color: rgba(42, 82, 152, 0.08);
-      color: var(--primary-color);
-    }
-    
-    .menu-icon {
-      font-size: 18px;
-      margin-right: 12px;
-      width: 24px;
-      text-align: center;
-    }
-    
-    .sidebar-footer {
-      padding: 15px 20px;
-      border-top: 1px solid var(--border-color);
-    }
-    
-    .user-info {
-      display: flex;
-      align-items: center;
-    }
-    
-    .user-avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #e0e0e0, #c0c0c0);
-      margin-right: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      color: var(--text-color);
-    }
-    
-    .user-details {
-      flex: 1;
-    }
-    
-    .user-name {
-      font-size: 14px;
-      font-weight: 500;
-    }
-    
-    .user-role {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-    
-    .logout-btn {
-      margin-left: 10px;
-      color: var(--text-light);
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-      transition: var(--transition);
-    }
-    
-    .logout-btn:hover {
-      color: var(--danger-color);
-    }
-    .action-btn {
-      background: none;
-      border: none;
-      color: var(--primary-color);
-      cursor: pointer;
-      font-size: 14px;
-      margin-right: 10px;
-      transition: var(--transition);
-    }
-    
-    .action-btn:hover {
-      color: var(--primary-light);
-    }
-    
-    .action-btn.danger {
-      color: var(--danger-color);
-    }
-    
-    .action-btn.danger:hover {
-      color: #d32f2f;
-    }
+      .card-body {
+        padding: 20px;
+      }
 
+      .coproprietaires-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
 
-    
-  </style>
-</head>
-<body>
-   <!-- Sidebar --> 
-   <aside class="sidebar">
-    <div class="sidebar-header">
-      <div class="logo-container">
-        <i class="fas fa-city logo-icon"></i>
-      </div>
-      <div class="brand-name">Syndic<span>Pro</span></div>
-    </div>
-    
-    <div class="sidebar-content">
-      <p class="menu-label">Principal</p>
-      <ul class="menu-items">
-        <li class="menu-item">
-          <a href="dashboard.html" class="menu-link">
-            <i class="fas fa-home menu-icon"></i>
-            <span class="menu-text">Dashboard</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="Copropriétaires.html" class="menu-link ">
-            <i class="fas fa-users menu-icon"></i>
-            <span class="menu-text">Copropriétaires</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="lots.html" class="menu-link">
-            <i class="fas fa-building menu-icon"></i>
-            <span class="menu-text">Lots</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="Charges_Paiements.html" class="menu-link">
-            <i class="fas fa-file-invoice-dollar menu-icon"></i>
-            <span class="menu-text">Charges & Paiements</span>
-          </a>
-        </li>
-      </ul>
-      
-      <p class="menu-label">Gestion</p>
-      <ul class="menu-items">
-        <li class="menu-item">
-          <a href="Demandes_de_maintenance.html" class="menu-link">
-            <i class="fas fa-tools menu-icon"></i>
-            <span class="menu-text">Demandes de maintenance</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="evenement.html" class="menu-link active">
-            <i class="fas fa-calendar-alt menu-icon"></i>
-            <span class="menu-text">Événements</span>
-          </a>
-        </li>
-        
-      </ul>
-      
-      <p class="menu-label">Rapports</p>
-      <ul class="menu-items">
-        <li class="menu-item">
-          <a href="statistiques.html" class="menu-link">
-            <i class="fas fa-chart-pie menu-icon"></i>
-            <span class="menu-text">Statistiques</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="Paramètres.html" class="menu-link">
-            <i class="fas fa-cog menu-icon"></i>
-            <span class="menu-text">Paramètres</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-    
-    <div class="sidebar-footer">
-      <div class="user-info">
-        <div class="user-avatar">
-          <i class="fas fa-user"></i>
+      .coproprietaires-table th,
+      .coproprietaires-table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .coproprietaires-table th {
+        font-weight: 500;
+        color: var(--text-light);
+        font-size: 14px;
+      }
+
+      .coproprietaires-table td {
+        font-size: 14px;
+      }
+
+      .coproprietaires-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .coproprietaires-table tr:hover {
+        background-color: rgba(244, 247, 250, 0.5);
+      }
+
+      .action-cell {
+        text-align: right;
+      }
+
+      .action-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        color: var(--text-light);
+        transition: var(--transition);
+        background-color: transparent;
+      }
+
+      .action-btn:hover {
+        background-color: var(--background-color);
+        color: var(--primary-color);
+      }
+
+      .action-btn.edit:hover {
+        color: var(--primary-color);
+      }
+
+      .action-btn.delete:hover {
+        color: var(--danger-color);
+      }
+
+      /* Event content specific */
+      .event-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .event-table th,
+      .event-table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .event-table th {
+        font-weight: 500;
+        color: var(--text-light);
+        font-size: 14px;
+      }
+
+      .event-table td {
+        font-size: 14px;
+      }
+
+      .event-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .event-table tr:hover {
+        background-color: rgba(244, 247, 250, 0.5);
+      }
+
+      .action-cell {
+        text-align: right;
+      }
+
+      /* Modal styles */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 100;
+        opacity: 0;
+        visibility: hidden;
+        transition: var(--transition);
+      }
+
+      .modal-overlay.active {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .modal {
+        background-color: var(--background-light);
+        border-radius: 12px;
+        width: 500px;
+        max-width: 90%;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transform: translateY(-20px);
+        transition: var(--transition);
+      }
+
+      .modal-overlay.active .modal {
+        transform: translateY(0);
+      }
+
+      .modal-header {
+        padding: 20px;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .modal-title {
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      .modal-close {
+        background: none;
+        border: none;
+        font-size: 20px;
+        color: var(--text-muted);
+        cursor: pointer;
+      }
+
+      .modal-body {
+        padding: 20px;
+      }
+
+      .modal-footer {
+        border-top: 1px solid var(--border-color);
+        padding: 15px 20px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-color);
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 14px;
+        transition: var(--transition);
+      }
+
+      .form-control:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+      }
+      /* Sidebar styles */
+      .sidebar {
+        width: 260px;
+        height: 100vh;
+        background-color: var(--background-light);
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 10;
+        transition: var(--transition);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sidebar-header {
+        display: flex;
+        align-items: center;
+        padding: 20px;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .logo-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--accent-color)
+        );
+        border-radius: 10px;
+        margin-right: 12px;
+      }
+
+      .logo-icon {
+        font-size: 20px;
+        color: white;
+      }
+
+      .brand-name {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--primary-dark);
+      }
+
+      .brand-name span {
+        color: var(--accent-color);
+      }
+
+      .sidebar-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px 0;
+      }
+
+      .menu-label {
+        text-transform: uppercase;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--text-muted);
+        padding: 10px 20px;
+        margin-top: 15px;
+      }
+
+      .menu-items {
+        list-style: none;
+      }
+
+      .menu-item {
+        margin-bottom: 5px;
+      }
+
+      .menu-link {
+        display: flex;
+        align-items: center;
+        padding: 12px 20px;
+        color: var(--text-color);
+        text-decoration: none;
+        transition: var(--transition);
+        border-left: 3px solid transparent;
+      }
+
+      .menu-link:hover {
+        background-color: rgba(42, 82, 152, 0.05);
+      }
+
+      .menu-link.active {
+        border-left-color: var(--primary-color);
+        background-color: rgba(42, 82, 152, 0.08);
+        color: var(--primary-color);
+      }
+
+      .menu-icon {
+        font-size: 18px;
+        margin-right: 12px;
+        width: 24px;
+        text-align: center;
+      }
+
+      .sidebar-footer {
+        padding: 15px 20px;
+        border-top: 1px solid var(--border-color);
+      }
+
+      .user-info {
+        display: flex;
+        align-items: center;
+      }
+
+      .user-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #e0e0e0, #c0c0c0);
+        margin-right: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        color: var(--text-color);
+      }
+
+      .user-details {
+        flex: 1;
+      }
+
+      .user-name {
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .user-role {
+        font-size: 12px;
+        color: var(--text-muted);
+      }
+
+      .logout-btn {
+        margin-left: 10px;
+        color: var(--text-light);
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        transition: var(--transition);
+      }
+
+      .logout-btn:hover {
+        color: var(--danger-color);
+      }
+      .action-btn {
+        background: none;
+        border: none;
+        color: var(--primary-color);
+        cursor: pointer;
+        font-size: 14px;
+        margin-right: 10px;
+        transition: var(--transition);
+      }
+
+      .action-btn:hover {
+        color: var(--primary-light);
+      }
+
+      .action-btn.danger {
+        color: var(--danger-color);
+      }
+
+      .action-btn.danger:hover {
+        color: #d32f2f;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-container">
+          <i class="fas fa-city logo-icon"></i>
         </div>
-        <div class="user-details">
-          <div class="user-name"><script>document.write(JSON.parse(localStorage.getItem('user'))?.username || '');</script></div>
-          <div class="user-role">Administrateur</div>
+        <div class="brand-name">Syndic<span>Pro</span></div>
+      </div>
+
+      <div class="sidebar-content">
+        <p class="menu-label">Principal</p>
+        <ul class="menu-items">
+          <li class="menu-item">
+            <a href="dashboard.html" class="menu-link">
+              <i class="fas fa-home menu-icon"></i>
+              <span class="menu-text">Dashboard</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="Copropriétaires.html" class="menu-link">
+              <i class="fas fa-users menu-icon"></i>
+              <span class="menu-text">Copropriétaires</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="lots.html" class="menu-link">
+              <i class="fas fa-building menu-icon"></i>
+              <span class="menu-text">Lots</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="Charges_Paiements.html" class="menu-link">
+              <i class="fas fa-file-invoice-dollar menu-icon"></i>
+              <span class="menu-text">Charges & Paiements</span>
+            </a>
+          </li>
+        </ul>
+
+        <p class="menu-label">Gestion</p>
+        <ul class="menu-items">
+          <li class="menu-item">
+            <a href="Demandes_de_maintenance.html" class="menu-link">
+              <i class="fas fa-tools menu-icon"></i>
+              <span class="menu-text">Demandes de maintenance</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="evenement.html" class="menu-link active">
+              <i class="fas fa-calendar-alt menu-icon"></i>
+              <span class="menu-text">Événements</span>
+            </a>
+          </li>
+        </ul>
+
+        <p class="menu-label">Rapports</p>
+        <ul class="menu-items">
+          <li class="menu-item">
+            <a href="statistiques.html" class="menu-link">
+              <i class="fas fa-chart-pie menu-icon"></i>
+              <span class="menu-text">Statistiques</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="Paramètres.html" class="menu-link">
+              <i class="fas fa-cog menu-icon"></i>
+              <span class="menu-text">Paramètres</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="user-avatar">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="user-details">
+            <div class="user-name">
+              <script>
+                document.write(
+                  JSON.parse(localStorage.getItem("user"))?.username || ""
+                );
+              </script>
+            </div>
+            <div class="user-role">Administrateur</div>
+          </div>
+          <a href="logout.html" class="logout-btn" title="Déconnexion">
+            <i class="fas fa-sign-out-alt"></i>
+          </a>
         </div>
-        <a href="logout.html" class="logout-btn" title="Déconnexion">
-          <i class="fas fa-sign-out-alt"></i>
-        </a>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="top-bar">
+        <h1 class="page-title">Gestion des Événements</h1>
+        <div class="top-bar-actions">
+          <button class="btn btn-primary" id="addEventBtn">
+            <i class="fas fa-plus"></i> Ajouter un événement
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Liste des événements</h2>
+        </div>
+        <div class="card-body">
+          <table class="event-table">
+            <thead>
+              <tr>
+                <th>Nom de l'événement</th>
+                <th>Date</th>
+                <th>Lieu</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="eventsTableBody">
+              <!-- Rows will be added dynamically here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modal for Adding/Editing Event -->
+    <div class="modal-overlay" id="eventModal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 class="modal-title">Ajouter un événement</h3>
+          <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="eventForm">
+            <div class="form-group">
+              <label for="eventName" class="form-label"
+                >Nom de l'événement</label
+              >
+              <input
+                type="text"
+                id="eventName"
+                class="form-control"
+                placeholder="Nom de l'événement"
+              />
+            </div>
+            <div class="form-group">
+              <label for="eventDate" class="form-label">Date</label>
+              <input type="date" id="eventDate" class="form-control" />
+            </div>
+            <div class="form-group">
+              <label for="eventLocation" class="form-label">Lieu</label>
+              <input
+                type="text"
+                id="eventLocation"
+                class="form-control"
+                placeholder="Lieu de l'événement"
+              />
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-outline modal-close-btn"
+            onclick="closeModal()"
+          >
+            Annuler
+          </button>
+          <button class="btn btn-primary" onclick="saveEvent()">
+            Enregistrer
+          </button>
+        </div>
       </div>
     </div>
-  </aside>
 
-  <main class="main-content">
-    <div class="top-bar">
-      <h1 class="page-title">Gestion des Événements</h1>
-      <div class="top-bar-actions">
-        
-        <button class="btn btn-primary" id="addEventBtn">
-          <i class="fas fa-plus"></i> Ajouter un événement
-        </button>
-      </div>
-    </div>
+    <script>
+      if (window.location.pathname.endsWith(".html")) {
+        window.history.replaceState(
+          {},
+          "",
+          window.location.pathname.replace(".html", "")
+        );
+      }
 
-    <div class="card">
-      <div class="card-header">
-        <h2 class="card-title">Liste des événements</h2>
-      </div>
-      <div class="card-body">
-        <table class="event-table">
-          <thead>
-            <tr>
-              <th>Nom de l'événement</th>
-              <th>Date</th>
-              <th>Lieu</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="eventsTableBody">
-            <!-- Rows will be added dynamically here -->
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </main>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Éléments du DOM
+        const elements = {
+          addEventBtn: document.getElementById("addEventBtn"),
+          eventModal: document.getElementById("eventModal"),
+          eventForm: document.getElementById("eventForm"),
+          eventsTableBody: document.getElementById("eventsTableBody"),
+          modalTitle: document.querySelector(".modal-title"),
+          eventName: document.getElementById("eventName"),
+          eventDate: document.getElementById("eventDate"),
+          eventLocation: document.getElementById("eventLocation"),
+        };
 
-  <!-- Modal for Adding/Editing Event -->
-  <div class="modal-overlay" id="eventModal">
-    <div class="modal">
-      <div class="modal-header">
-        <h3 class="modal-title">Ajouter un événement</h3>
-        <button class="modal-close" onclick="closeModal()">&times;</button>
-      </div>
-      <div class="modal-body">
-        <form id="eventForm">
-          <div class="form-group">
-            <label for="eventName" class="form-label">Nom de l'événement</label>
-            <input type="text" id="eventName" class="form-control" placeholder="Nom de l'événement">
-          </div>
-          <div class="form-group">
-            <label for="eventDate" class="form-label">Date</label>
-            <input type="date" id="eventDate" class="form-control">
-          </div>
-          <div class="form-group">
-            <label for="eventLocation" class="form-label">Lieu</label>
-            <input type="text" id="eventLocation" class="form-control" placeholder="Lieu de l'événement">
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-outline modal-close-btn" onclick="closeModal()">Annuler</button>
-        <button class="btn btn-primary" onclick="saveEvent()">Enregistrer</button>
-      </div>
-    </div>
-  </div>
+        let currentEventId = null; // Pour suivre l'événement en cours d'édition
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-    // Éléments du DOM
-    const elements = {
-        addEventBtn: document.getElementById('addEventBtn'),
-        eventModal: document.getElementById('eventModal'),
-        eventForm: document.getElementById('eventForm'),
-        eventsTableBody: document.getElementById('eventsTableBody'),
-        modalTitle: document.querySelector('.modal-title'),
-        eventName: document.getElementById('eventName'),
-        eventDate: document.getElementById('eventDate'),
-        eventLocation: document.getElementById('eventLocation')
-    };
-
-    let currentEventId = null; // Pour suivre l'événement en cours d'édition
-
-    // Vérifier l'authentification
-    function checkAuth() {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            window.location.href = '/index.html';
+        // Vérifier l'authentification
+        function checkAuth() {
+          const token = localStorage.getItem("token");
+          if (!token) {
+            window.location.href = "/index.html";
             return false;
+          }
+          return true;
         }
-        return true;
-    }
 
-    // Formater la date pour l'affichage
-    function formatDateForDisplay(dateString) {
-        if (!dateString) return '';
-        const date = new Date(dateString);
-        return date.toLocaleDateString('fr-FR');
-    }
+        // Formater la date pour l'affichage
+        function formatDateForDisplay(dateString) {
+          if (!dateString) return "";
+          const date = new Date(dateString);
+          return date.toLocaleDateString("fr-FR");
+        }
 
-    // Récupérer tous les événements
-    async function fetchEvents() {
-        try {
-            const token = localStorage.getItem('token');
+        // Récupérer tous les événements
+        async function fetchEvents() {
+          try {
+            const token = localStorage.getItem("token");
             if (!token) {
-                window.location.href = '/index.html';
-                return [];
+              window.location.href = "/index.html";
+              return [];
             }
 
-            const response = await fetch('http://localhost:7000/events/', {
-                headers: {
-                    'Authorization': token
-                }
+            const response = await fetch("http://localhost:7000/events/", {
+              headers: {
+                Authorization: token,
+              },
             });
 
             if (!response.ok) {
-                if (response.status === 401) {
-                    localStorage.removeItem('token');
-                    window.location.href = '/index.html';
-                }
-                throw new Error('Erreur lors de la récupération des événements');
+              if (response.status === 401) {
+                localStorage.removeItem("token");
+                window.location.href = "/index.html";
+              }
+              throw new Error("Erreur lors de la récupération des événements");
             }
 
             return await response.json();
-        } catch (error) {
-            console.error('Erreur:', error);
-            showAlert('error', 'Impossible de charger les événements');
+          } catch (error) {
+            console.error("Erreur:", error);
+            showAlert("error", "Impossible de charger les événements");
             return [];
+          }
         }
-    }
 
-    // Ouvrir la modale pour ajouter/modifier un événement
-    function openModal(event = null) {
-        console.log('Ouverture de la modale', event); // Debug
-        
-        if (event) {
-            elements.modalTitle.textContent = 'Modifier l\'événement';
+        // Ouvrir la modale pour ajouter/modifier un événement
+        function openModal(event = null) {
+          console.log("Ouverture de la modale", event); // Debug
+
+          if (event) {
+            elements.modalTitle.textContent = "Modifier l'événement";
             elements.eventName.value = event.nomEvent;
-            elements.eventDate.value = event.date.split('T')[0];
+            elements.eventDate.value = event.date.split("T")[0];
             elements.eventLocation.value = event.lieu;
             currentEventId = event.idEvent;
-        } else {
-            elements.modalTitle.textContent = 'Ajouter un événement';
+          } else {
+            elements.modalTitle.textContent = "Ajouter un événement";
             elements.eventForm.reset();
             currentEventId = null;
+          }
+
+          elements.eventModal.classList.add("active");
+          document.body.style.overflow = "hidden";
         }
-        
-        elements.eventModal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
 
-    // Fermer la modale
-    function closeModal() {
-        console.log('Fermeture de la modale'); // Debug
-        elements.eventModal.classList.remove('active');
-        document.body.style.overflow = 'auto';
-        elements.eventForm.reset();
-        currentEventId = null;
-    }
+        // Fermer la modale
+        function closeModal() {
+          console.log("Fermeture de la modale"); // Debug
+          elements.eventModal.classList.remove("active");
+          document.body.style.overflow = "auto";
+          elements.eventForm.reset();
+          currentEventId = null;
+        }
 
-    // Sauvegarder un événement (création ou modification)
-    async function saveEvent() {
-        try {
-            const token = localStorage.getItem('token');
+        // Sauvegarder un événement (création ou modification)
+        async function saveEvent() {
+          try {
+            const token = localStorage.getItem("token");
             if (!token) {
-                window.location.href = '/index.html';
-                return;
+              window.location.href = "/index.html";
+              return;
             }
 
             const eventData = {
-                nom: elements.eventName.value.trim(),
-                date: elements.eventDate.value,
-                lieu: elements.eventLocation.value.trim()
+              nom: elements.eventName.value.trim(),
+              date: elements.eventDate.value,
+              lieu: elements.eventLocation.value.trim(),
             };
 
             // Validation
             if (!eventData.nom || !eventData.date || !eventData.lieu) {
-                showAlert('error', 'Veuillez remplir tous les champs');
-                return;
+              showAlert("error", "Veuillez remplir tous les champs");
+              return;
             }
 
             let response;
             if (currentEventId) {
-                // Modification
-                response = await fetch(`http://localhost:7000/events/${currentEventId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': token
-                    },
-                    body: JSON.stringify(eventData)
-                });
+              // Modification
+              response = await fetch(
+                `http://localhost:7000/events/${currentEventId}`,
+                {
+                  method: "PUT",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: token,
+                  },
+                  body: JSON.stringify(eventData),
+                }
+              );
             } else {
-                // Création
-                response = await fetch('http://localhost:7000/events/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': token
-                    },
-                    body: JSON.stringify(eventData)
-                });
+              // Création
+              response = await fetch("http://localhost:7000/events/", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: token,
+                },
+                body: JSON.stringify(eventData),
+              });
             }
 
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Erreur lors de la sauvegarde');
+              const errorData = await response.json();
+              throw new Error(
+                errorData.error || "Erreur lors de la sauvegarde"
+              );
             }
 
             await renderEvents();
             closeModal();
-            showAlert('success', 'Événement enregistré avec succès');
-        } catch (error) {
-            console.error('Erreur:', error);
-            showAlert('error', error.message || 'Erreur lors de la sauvegarde');
+            showAlert("success", "Événement enregistré avec succès");
+          } catch (error) {
+            console.error("Erreur:", error);
+            showAlert("error", error.message || "Erreur lors de la sauvegarde");
+          }
         }
-    }
 
-    // Supprimer un événement
-    async function deleteEvent(eventId) {
-        const modal = document.createElement('div');
-        modal.style.position = 'fixed';
-        modal.style.top = '0';
-        modal.style.left = '0';
-        modal.style.width = '100%';
-        modal.style.height = '100%';
-        modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
-        modal.style.display = 'flex';
-        modal.style.justifyContent = 'center';
-        modal.style.alignItems = 'center';
-        modal.style.zIndex = '1000';
+        // Supprimer un événement
+        async function deleteEvent(eventId) {
+          const modal = document.createElement("div");
+          modal.style.position = "fixed";
+          modal.style.top = "0";
+          modal.style.left = "0";
+          modal.style.width = "100%";
+          modal.style.height = "100%";
+          modal.style.backgroundColor = "rgba(0,0,0,0.5)";
+          modal.style.display = "flex";
+          modal.style.justifyContent = "center";
+          modal.style.alignItems = "center";
+          modal.style.zIndex = "1000";
 
-        modal.innerHTML = `
+          modal.innerHTML = `
             <div style="background: white; padding: 5px; border-radius: 12px; width: 500px; height:205px;">
                 <h3 style="background: white; padding: 20px; font-size: 18px; font-weight: 600;">Confirmer la suppression</h3>
                 <hr style="border: 0; height: 0.5px; background: #f0f0f0; margin: 0;"> 
@@ -984,78 +1028,87 @@
             </div>
         `;
 
-        document.body.appendChild(modal);
+          document.body.appendChild(modal);
 
-        // Gestion des clics
-        modal.querySelector('#cancelBtn').addEventListener('click', () => {
+          // Gestion des clics
+          modal.querySelector("#cancelBtn").addEventListener("click", () => {
             document.body.removeChild(modal);
-        });
+          });
 
-        modal.querySelector('#confirmBtn').addEventListener('click', async () => {
-            try {
-                const token = localStorage.getItem('token');
+          modal
+            .querySelector("#confirmBtn")
+            .addEventListener("click", async () => {
+              try {
+                const token = localStorage.getItem("token");
                 if (!token) {
-                    window.location.href = '/index.html';
-                    return;
+                  window.location.href = "/index.html";
+                  return;
                 }
 
-                const response = await fetch(`http://localhost:7000/events/${eventId}`, {
-                    method: 'DELETE',
+                const response = await fetch(
+                  `http://localhost:7000/events/${eventId}`,
+                  {
+                    method: "DELETE",
                     headers: {
-                        'Authorization': token
-                    }
-                });
+                      Authorization: token,
+                    },
+                  }
+                );
 
                 if (!response.ok) {
-                    throw new Error('Erreur lors de la suppression');
+                  throw new Error("Erreur lors de la suppression");
                 }
 
                 await renderEvents();
-                showAlert('success', 'Événement supprimé avec succès');
-            } catch (error) {
-                console.error('Erreur:', error);
-                showAlert('error', error.message || 'Erreur lors de la suppression');
-            } finally {
+                showAlert("success", "Événement supprimé avec succès");
+              } catch (error) {
+                console.error("Erreur:", error);
+                showAlert(
+                  "error",
+                  error.message || "Erreur lors de la suppression"
+                );
+              } finally {
                 document.body.removeChild(modal);
-            }
-        });
-    }
+              }
+            });
+        }
 
-    // Afficher une alerte
-    function showAlert(type, message) {
-        const alertDiv = document.createElement('div');
-        alertDiv.style.position = 'fixed';
-        alertDiv.style.top = '20px';
-        alertDiv.style.right = '20px';
-        alertDiv.style.padding = '15px 20px';
-        alertDiv.style.borderRadius = '8px';
-        alertDiv.style.color = 'white';
-        alertDiv.style.zIndex = '1000';
-        alertDiv.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
-        alertDiv.style.transition = 'all 0.3s ease';
-        
-        alertDiv.style.backgroundColor = type === 'success' ? '#4CAF50' : '#F44336';
-        alertDiv.textContent = message;
-        
-        document.body.appendChild(alertDiv);
-        
-        setTimeout(() => {
-            alertDiv.style.opacity = '0';
-            alertDiv.style.transform = 'translateX(100%)';
+        // Afficher une alerte
+        function showAlert(type, message) {
+          const alertDiv = document.createElement("div");
+          alertDiv.style.position = "fixed";
+          alertDiv.style.top = "20px";
+          alertDiv.style.right = "20px";
+          alertDiv.style.padding = "15px 20px";
+          alertDiv.style.borderRadius = "8px";
+          alertDiv.style.color = "white";
+          alertDiv.style.zIndex = "1000";
+          alertDiv.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
+          alertDiv.style.transition = "all 0.3s ease";
+
+          alertDiv.style.backgroundColor =
+            type === "success" ? "#4CAF50" : "#F44336";
+          alertDiv.textContent = message;
+
+          document.body.appendChild(alertDiv);
+
+          setTimeout(() => {
+            alertDiv.style.opacity = "0";
+            alertDiv.style.transform = "translateX(100%)";
             setTimeout(() => {
-                if (document.body.contains(alertDiv)) {
-                    document.body.removeChild(alertDiv);
-                }
+              if (document.body.contains(alertDiv)) {
+                document.body.removeChild(alertDiv);
+              }
             }, 300);
-        }, 3000);
-    }
+          }, 3000);
+        }
 
-    // Afficher les événements dans le tableau
-    async function renderEvents() {
-        const events = await fetchEvents();
-        elements.eventsTableBody.innerHTML = '';
+        // Afficher les événements dans le tableau
+        async function renderEvents() {
+          const events = await fetchEvents();
+          elements.eventsTableBody.innerHTML = "";
 
-        if (events.length === 0) {
+          if (events.length === 0) {
             elements.eventsTableBody.innerHTML = `
                 <tr>
                     <td colspan="4" style="text-align: center; padding: 20px; color: #666;">
@@ -1064,136 +1117,148 @@
                 </tr>
             `;
             return;
-        }
+          }
 
-        events.forEach(event => {
-            const row = document.createElement('tr');
+          events.forEach((event) => {
+            const row = document.createElement("tr");
             row.innerHTML = `
                 <td>${event.nomEvent}</td>
                 <td>${formatDateForDisplay(event.date)}</td>
                 <td>${event.lieu}</td>
                 <td class="action-cell">
-                    <button class="action-btn edit-btn" data-id="${event.idEvent}" title="Modifier">
+                    <button class="action-btn edit-btn" data-id="${
+                      event.idEvent
+                    }" title="Modifier">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button class="action-btn danger delete-btn" data-id="${event.idEvent}" title="Supprimer">
+                    <button class="action-btn danger delete-btn" data-id="${
+                      event.idEvent
+                    }" title="Supprimer">
                         <i class="fas fa-trash"></i>
                     </button>
                 </td>
             `;
             elements.eventsTableBody.appendChild(row);
-        });
+          });
 
-        // Ajouter les écouteurs pour les boutons d'action
-        attachActionListeners();
-    }
-
-    // Attacher les écouteurs d'événements aux boutons d'action
-    function attachActionListeners() {
-        // Boutons d'édition
-        document.querySelectorAll('.edit-btn').forEach(btn => {
-            btn.addEventListener('click', async function() {
-                const eventId = this.getAttribute('data-id');
-                try {
-                    const token = localStorage.getItem('token');
-                    if (!token) {
-                        window.location.href = '/index.html';
-                        return;
-                    }
-
-                    const response = await fetch(`http://localhost:7000/events/${eventId}`, {
-                        headers: {
-                            'Authorization': token
-                        }
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('Erreur lors du chargement');
-                    }
-
-                    const event = await response.json();
-                    openModal(event);
-                } catch (error) {
-                    console.error('Erreur:', error);
-                    showAlert('error', 'Impossible de charger l\'événement');
-                }
-            });
-        });
-
-        // Boutons de suppression
-        document.querySelectorAll('.delete-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const eventId = this.getAttribute('data-id');
-                deleteEvent(eventId);
-            });
-        });
-    }
-
-    // Initialiser les écouteurs d'événements principaux
-    function initializeEventListeners() {
-        // Bouton d'ajout d'événement
-        if (elements.addEventBtn) {
-            elements.addEventBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                console.log('Bouton ajouter cliqué'); // Debug
-                openModal();
-            });
+          // Ajouter les écouteurs pour les boutons d'action
+          attachActionListeners();
         }
 
-        // Boutons de fermeture de la modale
-        document.querySelectorAll('.modal-close, .modal-close-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
+        // Attacher les écouteurs d'événements aux boutons d'action
+        function attachActionListeners() {
+          // Boutons d'édition
+          document.querySelectorAll(".edit-btn").forEach((btn) => {
+            btn.addEventListener("click", async function () {
+              const eventId = this.getAttribute("data-id");
+              try {
+                const token = localStorage.getItem("token");
+                if (!token) {
+                  window.location.href = "/index.html";
+                  return;
+                }
+
+                const response = await fetch(
+                  `http://localhost:7000/events/${eventId}`,
+                  {
+                    headers: {
+                      Authorization: token,
+                    },
+                  }
+                );
+
+                if (!response.ok) {
+                  throw new Error("Erreur lors du chargement");
+                }
+
+                const event = await response.json();
+                openModal(event);
+              } catch (error) {
+                console.error("Erreur:", error);
+                showAlert("error", "Impossible de charger l'événement");
+              }
+            });
+          });
+
+          // Boutons de suppression
+          document.querySelectorAll(".delete-btn").forEach((btn) => {
+            btn.addEventListener("click", function () {
+              const eventId = this.getAttribute("data-id");
+              deleteEvent(eventId);
+            });
+          });
+        }
+
+        // Initialiser les écouteurs d'événements principaux
+        function initializeEventListeners() {
+          // Bouton d'ajout d'événement
+          if (elements.addEventBtn) {
+            elements.addEventBtn.addEventListener("click", function (e) {
+              e.preventDefault();
+              console.log("Bouton ajouter cliqué"); // Debug
+              openModal();
+            });
+          }
+
+          // Boutons de fermeture de la modale
+          document
+            .querySelectorAll(".modal-close, .modal-close-btn")
+            .forEach((btn) => {
+              btn.addEventListener("click", function (e) {
                 e.preventDefault();
                 closeModal();
+              });
             });
-        });
 
-        // Bouton de sauvegarde
-        const saveBtn = document.querySelector('.modal-footer .btn-primary');
-        if (saveBtn) {
-            saveBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                saveEvent();
+          // Bouton de sauvegarde
+          const saveBtn = document.querySelector(".modal-footer .btn-primary");
+          if (saveBtn) {
+            saveBtn.addEventListener("click", function (e) {
+              e.preventDefault();
+              saveEvent();
             });
-        }
+          }
 
-        // Fermer la modale en cliquant à l'extérieur
-        if (elements.eventModal) {
-            elements.eventModal.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeModal();
-                }
-            });
-        }
-
-        // Gestion de la touche Échap
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && elements.eventModal.classList.contains('active')) {
+          // Fermer la modale en cliquant à l'extérieur
+          if (elements.eventModal) {
+            elements.eventModal.addEventListener("click", function (e) {
+              if (e.target === this) {
                 closeModal();
+              }
+            });
+          }
+
+          // Gestion de la touche Échap
+          document.addEventListener("keydown", function (e) {
+            if (
+              e.key === "Escape" &&
+              elements.eventModal.classList.contains("active")
+            ) {
+              closeModal();
             }
-        });
-    }
-
-    // Fonction d'initialisation principale
-    async function init() {
-        console.log('Initialisation de la page événements'); // Debug
-        
-        if (!checkAuth()) {
-            return;
+          });
         }
 
-        // Initialiser les écouteurs d'événements
-        initializeEventListeners();
-        
-        // Charger les événements
-        await renderEvents();
-        
-        console.log('Page événements initialisée avec succès'); // Debug
-    }
+        // Fonction d'initialisation principale
+        async function init() {
+          console.log("Initialisation de la page événements"); // Debug
 
-    // Démarrer l'application
-    init();
-});
-</script>
-</body>
+          if (!checkAuth()) {
+            return;
+          }
+
+          // Initialiser les écouteurs d'événements
+          initializeEventListeners();
+
+          // Charger les événements
+          await renderEvents();
+
+          console.log("Page événements initialisée avec succès"); // Debug
+        }
+
+        // Démarrer l'application
+        init();
+      });
+    </script>
+  </body>
 </html>

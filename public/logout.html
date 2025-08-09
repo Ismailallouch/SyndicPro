@@ -117,6 +117,9 @@
   </div>
 
   <script>
+    if (window.location.pathname.endsWith('.html')) {
+            window.history.replaceState({}, '', window.location.pathname.replace('.html', ''))
+        }
     document.addEventListener('DOMContentLoaded', function() {
       // Gestion de la déconnexion
       const logoutButton = document.getElementById('logoutButton');

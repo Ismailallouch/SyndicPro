@@ -92,6 +92,11 @@
   </div>
 
   <script>
+    
+    if (window.location.pathname.endsWith('.html')) {
+    window.history.replaceState({}, '', window.location.pathname.replace('.html', ''))
+    }
+
     // Toggle password visibility
     document.querySelector('.toggle-password').addEventListener('click', function() {
       const passwordInput = document.getElementById('password');

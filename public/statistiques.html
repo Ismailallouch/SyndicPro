@@ -1,667 +1,704 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rapports & Statistiques</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    :root {
-      --primary-color: #2a5298;
-      --primary-light: #3a67b6;
-      --primary-dark: #1c3c76;
-      --accent-color: #00c6ff;
-      --secondary-color: #4CAF50;
-      --warning-color: #FFC107;
-      --danger-color: #F44336;
-      --text-color: #333;
-      --text-light: #666;
-      --text-muted: #999;
-      --background-color: #f4f7fa;
-      --background-light: #ffffff;
-      --border-color: #e1e5eb;
-      --transition: all 0.4s ease;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
-
-    body {
-      background-color: var(--background-color);
-      color: var(--text-color);
-      min-height: 100vh;
-      display: flex;
-    }
-
-    .main-content {
-      flex: 1;
-      margin-left: 260px;
-      padding: 20px;
-    }
-
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-    }
-
-    .page-title {
-      font-size: 24px;
-      font-weight: 600;
-      color: var(--primary-dark);
-    }
-
-    .top-bar-actions {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .search-box {
-      position: relative;
-    }
-
-    .search-input {
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 8px 15px 8px 35px;
-      background-color: var(--background-light);
-      font-size: 14px;
-      outline: none;
-      transition: var(--transition);
-      width: 240px;
-    }
-
-    .search-input:focus {
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-muted);
-      font-size: 14px;
-    }
-
-    .rapport-section {
-      background-color: var(--background-light);
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      margin-bottom: 30px;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    .rapport-section h2 {
-      font-size: 20px;
-      font-weight: 600;
-      color: var(--primary-dark);
-    }
-
-    .rapport-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .rapport-list button {
-      background-color: var(--primary-color);
-      color: white;
-      border: none;
-      padding: 8px 15px;
-      font-size: 14px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .rapport-list button:hover {
-      background-color: var(--primary-light);
-    }
-
-    .rapport-list button i {
-      margin-left: 10px;
-    }
-
-    .rapport-content {
-      display: none;
-      padding: 20px;
-      background-color: var(--background-light);
-      border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .stats-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 30px;
-    }
-
-    .stats-table th,
-    .stats-table td {
-      padding: 15px;
-      text-align: left;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .stats-table th {
-      font-weight: 500;
-      color: var(--text-light);
-      font-size: 14px;
-    }
-
-    .stats-table td {
-      font-size: 14px;
-    }
-
-    .stats-table tr:last-child td {
-      border-bottom: none;
-    }
-
-    .stats-table tr:hover {
-      background-color: rgba(244, 247, 250, 0.5);
-    }
-
-    .chart-container {
-      margin-top: 30px;
-    }
-    canvas {
-      max-width: 100%;
-      height: 400px;
-    }
-     /* Sidebar styles */
-     .sidebar {
-      width: 260px;
-      height: 100vh;
-      background-color: var(--background-light);
-      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 10;
-      transition: var(--transition);
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .sidebar-header {
-      display: flex;
-      align-items: center;
-      padding: 20px;
-      border-bottom: 1px solid var(--border-color);
-    }
-    
-    .logo-container {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-      border-radius: 10px;
-      margin-right: 12px;
-    }
-    
-    .logo-icon {
-      font-size: 20px;
-      color: white;
-    }
-    
-    .brand-name {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--primary-dark);
-    }
-    
-    .brand-name span {
-      color: var(--accent-color);
-    }
-    
-    .sidebar-content {
-      flex: 1;
-      overflow-y: auto;
-      padding: 20px 0;
-    }
-    
-    .menu-label {
-      text-transform: uppercase;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-muted);
-      padding: 10px 20px;
-      margin-top: 15px;
-    }
-    
-    .menu-items {
-      list-style: none;
-    }
-    
-    .menu-item {
-      margin-bottom: 5px;
-    }
-    
-    .menu-link {
-      display: flex;
-      align-items: center;
-      padding: 12px 20px;
-      color: var(--text-color);
-      text-decoration: none;
-      transition: var(--transition);
-      border-left: 3px solid transparent;
-    }
-    
-    .menu-link:hover {
-      background-color: rgba(42, 82, 152, 0.05);
-    }
-    
-    .menu-link.active {
-      border-left-color: var(--primary-color);
-      background-color: rgba(42, 82, 152, 0.08);
-      color: var(--primary-color);
-    }
-    
-    .menu-icon {
-      font-size: 18px;
-      margin-right: 12px;
-      width: 24px;
-      text-align: center;
-    }
-    
-    .sidebar-footer {
-      padding: 15px 20px;
-      border-top: 1px solid var(--border-color);
-    }
-    
-    .user-info {
-      display: flex;
-      align-items: center;
-    }
-    
-    .user-avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #e0e0e0, #c0c0c0);
-      margin-right: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      color: var(--text-color);
-    }
-    
-    .user-details {
-      flex: 1;
-    }
-    
-    .user-name {
-      font-size: 14px;
-      font-weight: 500;
-    }
-    
-    .user-role {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-    
-    .logout-btn {
-      margin-left: 10px;
-      color: var(--text-light);
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-      transition: var(--transition);
-    }
-    
-    .logout-btn:hover {
-      color: var(--danger-color);
-    }
-  </style>
-</head>
-<body>
-     <!-- Sidebar ca c'est pour le logo  --> 
-  <aside class="sidebar">
-    <div class="sidebar-header">
-      <div class="logo-container">
-        <i class="fas fa-city logo-icon"></i>
-      </div>
-      <div class="brand-name">Syndic<span>Pro</span></div>
-    </div>
-    
-    <div class="sidebar-content">
-      <p class="menu-label">Principal</p>
-      <ul class="menu-items">
-        <li class="menu-item">
-          <a href="dashboard.html" class="menu-link ">
-            <i class="fas fa-home menu-icon"></i>
-            <span class="menu-text">Dashboard</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="Copropriétaires.html" class="menu-link">
-            <i class="fas fa-users menu-icon"></i>
-            <span class="menu-text">Copropriétaires</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="lots.html" class="menu-link"><!--abdelali hna khass thet le nom d la page dialek f blast # de meme chose pour l'okhrin-->
-            <i class="fas fa-building menu-icon"></i>
-            <span class="menu-text">Lots</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="Charges_Paiements.html" class="menu-link">
-            <i class="fas fa-file-invoice-dollar menu-icon"></i>
-            <span class="menu-text">Charges & Paiements</span>
-          </a>
-        </li>
-      </ul>
-      
-      <p class="menu-label">Gestion</p>
-      <ul class="menu-items">
-        <li class="menu-item">
-          <a href="Demandes_de_maintenance.html" class="menu-link">
-            <i class="fas fa-tools menu-icon"></i>
-            <span class="menu-text">Demandes de maintenance</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="evenement.html" class="menu-link">
-            <i class="fas fa-calendar-alt menu-icon"></i>
-            <span class="menu-text">Événements</span>
-          </a>
-        </li>
-        
-      </ul>
-      
-      <p class="menu-label">Rapports</p>
-      <ul class="menu-items">
-        <li class="menu-item">
-          <a href="statistiques.html" class="menu-link active">
-            <i class="fas fa-chart-pie menu-icon"></i>
-            <span class="menu-text">Statistiques</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="Paramètres.html" class="menu-link">
-            <i class="fas fa-cog menu-icon"></i>
-            <span class="menu-text">Paramètres</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-    
-    <div class="sidebar-footer">
-      <div class="user-info">
-        <div class="user-avatar">
-          <i class="fas fa-user"></i>
-        </div>
-        <div class="user-details">
-          <div class="user-name"><script>document.write(JSON.parse(localStorage.getItem('user'))?.username || '');</script></div>
-          <div class="user-role">Administrateur</div>
-        </div>
-        <a href="logout.html" class="logout-btn" title="Déconnexion">
-          <i class="fas fa-sign-out-alt"></i>
-        </a>
-      </div>
-    </div>
-  </aside>
-
-  <main class="main-content">
-    <div class="top-bar">
-      <h1 class="page-title">Rapports & Statistiques</h1>
-      <div class="top-bar-actions">
-       
-      </div>
-    </div>
-
-    <div class="rapport-section">
-      <h2>Rapports Disponibles</h2>
-      <div class="rapport-list">
-        <button onclick="showReport('revenu')">
-          Revenu total collecté <i class="fas fa-arrow-right"></i>
-        </button>
-        <button onclick="showReport('soldes')">
-          Soldes impayés <i class="fas fa-arrow-right"></i>
-        </button>
-        <button onclick="showReport('demandes')">
-          Demandes résolues au fil du temps <i class="fas fa-arrow-right"></i>
-        </button>
-        <button onclick="exportToCSV()">
-          Exporter en CSV/Excel <i class="fas fa-download"></i>
-        </button>
-      </div>
-    </div>
-
-    <!-- Rapport Content -->
-    <div id="revenuReport" class="rapport-content">
-      <h3>Revenu total collecté</h3>
-      <p>Détails sur le revenu total collecté...</p>
-    </div>
-
-    <div id="soldesReport" class="rapport-content">
-      <h3>Soldes impayés</h3>
-      <table class="stats-table">
-        <thead>
-          <tr>
-            <th>Copropriétaire</th>
-            <th>Solde Dû</th>
-            <th>Dernier Paiement</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>J. Dubois</td>
-            <td>250€</td>
-            <td>01/04/2025</td>
-          </tr>
-          <tr>
-            <td>M. Martin</td>
-            <td>575€</td>
-            <td>15/03/2025</td>
-          </tr>
-          <tr>
-            <td>P. Dupont</td>
-            <td>0€</td>
-            <td>31/03/2025</td>
-          </tr>
-          <tr>
-            <td>S. Durand</td>
-            <td>325€</td>
-            <td>20/03/2025</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div id="demandesReport" class="rapport-content">
-      <h3>Demandes résolues au fil du temps</h3>
-      <p>Détails sur les demandes résolues...</p>
-    </div>
-
-    <!-- Graphiques -->
-    <div class="chart-container">
-      <h3>Graphique des Soldes Dûs</h3>
-      <canvas id="balanceChart"></canvas>
-    </div>
-
-  </main>
-
-  <script>
-    // Utility function to check auth
-    function checkAuth() {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        window.location.href = '/index.html';
-        return false;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rapports & Statistiques</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      :root {
+        --primary-color: #2a5298;
+        --primary-light: #3a67b6;
+        --primary-dark: #1c3c76;
+        --accent-color: #00c6ff;
+        --secondary-color: #4caf50;
+        --warning-color: #ffc107;
+        --danger-color: #f44336;
+        --text-color: #333;
+        --text-light: #666;
+        --text-muted: #999;
+        --background-color: #f4f7fa;
+        --background-light: #ffffff;
+        --border-color: #e1e5eb;
+        --transition: all 0.4s ease;
       }
-      return true;
-    }
 
-    // Fetch statistics data
-    async function fetchStatisticsData() {
-      if (!checkAuth()) return null;
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
 
-      try {
-        const token = localStorage.getItem('token');
-        
-        // Fetch all needed data in parallel
-        const [coproRes, chargesRes, maintenanceRes] = await Promise.all([
-          fetch('http://localhost:7000/copro/', { headers: { 'Authorization': token } }),
-          fetch('http://localhost:7000/charges/', { headers: { 'Authorization': token } }),
-          fetch('http://localhost:7000/maintenance/', { headers: { 'Authorization': token } })
-        ]);
+      body {
+        background-color: var(--background-color);
+        color: var(--text-color);
+        min-height: 100vh;
+        display: flex;
+      }
 
-        if (!coproRes.ok || !chargesRes.ok || !maintenanceRes.ok) {
-          throw new Error('Failed to fetch statistics data');
+      .main-content {
+        flex: 1;
+        margin-left: 260px;
+        padding: 20px;
+      }
+
+      .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+      }
+
+      .page-title {
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--primary-dark);
+      }
+
+      .top-bar-actions {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .search-box {
+        position: relative;
+      }
+
+      .search-input {
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 8px 15px 8px 35px;
+        background-color: var(--background-light);
+        font-size: 14px;
+        outline: none;
+        transition: var(--transition);
+        width: 240px;
+      }
+
+      .search-input:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+      }
+
+      .search-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-muted);
+        font-size: 14px;
+      }
+
+      .rapport-section {
+        background-color: var(--background-light);
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .rapport-section h2 {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--primary-dark);
+      }
+
+      .rapport-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .rapport-list button {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        font-size: 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .rapport-list button:hover {
+        background-color: var(--primary-light);
+      }
+
+      .rapport-list button i {
+        margin-left: 10px;
+      }
+
+      .rapport-content {
+        display: none;
+        padding: 20px;
+        background-color: var(--background-light);
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .stats-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 30px;
+      }
+
+      .stats-table th,
+      .stats-table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .stats-table th {
+        font-weight: 500;
+        color: var(--text-light);
+        font-size: 14px;
+      }
+
+      .stats-table td {
+        font-size: 14px;
+      }
+
+      .stats-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .stats-table tr:hover {
+        background-color: rgba(244, 247, 250, 0.5);
+      }
+
+      .chart-container {
+        margin-top: 30px;
+      }
+      canvas {
+        max-width: 100%;
+        height: 400px;
+      }
+      /* Sidebar styles */
+      .sidebar {
+        width: 260px;
+        height: 100vh;
+        background-color: var(--background-light);
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 10;
+        transition: var(--transition);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sidebar-header {
+        display: flex;
+        align-items: center;
+        padding: 20px;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .logo-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--accent-color)
+        );
+        border-radius: 10px;
+        margin-right: 12px;
+      }
+
+      .logo-icon {
+        font-size: 20px;
+        color: white;
+      }
+
+      .brand-name {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--primary-dark);
+      }
+
+      .brand-name span {
+        color: var(--accent-color);
+      }
+
+      .sidebar-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px 0;
+      }
+
+      .menu-label {
+        text-transform: uppercase;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--text-muted);
+        padding: 10px 20px;
+        margin-top: 15px;
+      }
+
+      .menu-items {
+        list-style: none;
+      }
+
+      .menu-item {
+        margin-bottom: 5px;
+      }
+
+      .menu-link {
+        display: flex;
+        align-items: center;
+        padding: 12px 20px;
+        color: var(--text-color);
+        text-decoration: none;
+        transition: var(--transition);
+        border-left: 3px solid transparent;
+      }
+
+      .menu-link:hover {
+        background-color: rgba(42, 82, 152, 0.05);
+      }
+
+      .menu-link.active {
+        border-left-color: var(--primary-color);
+        background-color: rgba(42, 82, 152, 0.08);
+        color: var(--primary-color);
+      }
+
+      .menu-icon {
+        font-size: 18px;
+        margin-right: 12px;
+        width: 24px;
+        text-align: center;
+      }
+
+      .sidebar-footer {
+        padding: 15px 20px;
+        border-top: 1px solid var(--border-color);
+      }
+
+      .user-info {
+        display: flex;
+        align-items: center;
+      }
+
+      .user-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #e0e0e0, #c0c0c0);
+        margin-right: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        color: var(--text-color);
+      }
+
+      .user-details {
+        flex: 1;
+      }
+
+      .user-name {
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .user-role {
+        font-size: 12px;
+        color: var(--text-muted);
+      }
+
+      .logout-btn {
+        margin-left: 10px;
+        color: var(--text-light);
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        transition: var(--transition);
+      }
+
+      .logout-btn:hover {
+        color: var(--danger-color);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Sidebar ca c'est pour le logo  -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-container">
+          <i class="fas fa-city logo-icon"></i>
+        </div>
+        <div class="brand-name">Syndic<span>Pro</span></div>
+      </div>
+
+      <div class="sidebar-content">
+        <p class="menu-label">Principal</p>
+        <ul class="menu-items">
+          <li class="menu-item">
+            <a href="dashboard.html" class="menu-link">
+              <i class="fas fa-home menu-icon"></i>
+              <span class="menu-text">Dashboard</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="Copropriétaires.html" class="menu-link">
+              <i class="fas fa-users menu-icon"></i>
+              <span class="menu-text">Copropriétaires</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="lots.html" class="menu-link"
+              ><!--abdelali hna khass thet le nom d la page dialek f blast # de meme chose pour l'okhrin-->
+              <i class="fas fa-building menu-icon"></i>
+              <span class="menu-text">Lots</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="Charges_Paiements.html" class="menu-link">
+              <i class="fas fa-file-invoice-dollar menu-icon"></i>
+              <span class="menu-text">Charges & Paiements</span>
+            </a>
+          </li>
+        </ul>
+
+        <p class="menu-label">Gestion</p>
+        <ul class="menu-items">
+          <li class="menu-item">
+            <a href="Demandes_de_maintenance.html" class="menu-link">
+              <i class="fas fa-tools menu-icon"></i>
+              <span class="menu-text">Demandes de maintenance</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="evenement.html" class="menu-link">
+              <i class="fas fa-calendar-alt menu-icon"></i>
+              <span class="menu-text">Événements</span>
+            </a>
+          </li>
+        </ul>
+
+        <p class="menu-label">Rapports</p>
+        <ul class="menu-items">
+          <li class="menu-item">
+            <a href="statistiques.html" class="menu-link active">
+              <i class="fas fa-chart-pie menu-icon"></i>
+              <span class="menu-text">Statistiques</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="Paramètres.html" class="menu-link">
+              <i class="fas fa-cog menu-icon"></i>
+              <span class="menu-text">Paramètres</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="user-avatar">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="user-details">
+            <div class="user-name">
+              <script>
+                document.write(
+                  JSON.parse(localStorage.getItem("user"))?.username || ""
+                );
+              </script>
+            </div>
+            <div class="user-role">Administrateur</div>
+          </div>
+          <a href="logout.html" class="logout-btn" title="Déconnexion">
+            <i class="fas fa-sign-out-alt"></i>
+          </a>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="top-bar">
+        <h1 class="page-title">Rapports & Statistiques</h1>
+        <div class="top-bar-actions"></div>
+      </div>
+
+      <div class="rapport-section">
+        <h2>Rapports Disponibles</h2>
+        <div class="rapport-list">
+          <button onclick="showReport('revenu')">
+            Revenu total collecté <i class="fas fa-arrow-right"></i>
+          </button>
+          <button onclick="showReport('soldes')">
+            Soldes impayés <i class="fas fa-arrow-right"></i>
+          </button>
+          <button onclick="showReport('demandes')">
+            Demandes résolues au fil du temps <i class="fas fa-arrow-right"></i>
+          </button>
+          <button onclick="exportToCSV()">
+            Exporter en CSV/Excel <i class="fas fa-download"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Rapport Content -->
+      <div id="revenuReport" class="rapport-content">
+        <h3>Revenu total collecté</h3>
+        <p>Détails sur le revenu total collecté...</p>
+      </div>
+
+      <div id="soldesReport" class="rapport-content">
+        <h3>Soldes impayés</h3>
+        <table class="stats-table">
+          <thead>
+            <tr>
+              <th>Copropriétaire</th>
+              <th>Solde Dû</th>
+              <th>Dernier Paiement</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>J. Dubois</td>
+              <td>250€</td>
+              <td>01/04/2025</td>
+            </tr>
+            <tr>
+              <td>M. Martin</td>
+              <td>575€</td>
+              <td>15/03/2025</td>
+            </tr>
+            <tr>
+              <td>P. Dupont</td>
+              <td>0€</td>
+              <td>31/03/2025</td>
+            </tr>
+            <tr>
+              <td>S. Durand</td>
+              <td>325€</td>
+              <td>20/03/2025</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="demandesReport" class="rapport-content">
+        <h3>Demandes résolues au fil du temps</h3>
+        <p>Détails sur les demandes résolues...</p>
+      </div>
+
+      <!-- Graphiques -->
+      <div class="chart-container">
+        <h3>Graphique des Soldes Dûs</h3>
+        <canvas id="balanceChart"></canvas>
+      </div>
+    </main>
+
+    <script>
+      if (window.location.pathname.endsWith(".html")) {
+        window.history.replaceState(
+          {},
+          "",
+          window.location.pathname.replace(".html", "")
+        );
+      }
+
+      // Utility function to check auth
+      function checkAuth() {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          window.location.href = "/index.html";
+          return false;
         }
+        return true;
+      }
 
-        const [copros, charges, maintenances] = await Promise.all([
-          coproRes.json(),
-          chargesRes.json(),
-          maintenanceRes.json()
-        ]);
+      // Fetch statistics data
+      async function fetchStatisticsData() {
+        if (!checkAuth()) return null;
 
-        // Process payments data
-        const allPayments = [];
-        charges.forEach(charge => {
-          if (charge.paiements && charge.paiements.length > 0) {
-            charge.paiements.forEach(payment => {
-              allPayments.push({
-                ...payment,
-                typeCharge: charge.typeCharge,
-                montant: charge.montant,
-                idCharge: charge.idCharge
+        try {
+          const token = localStorage.getItem("token");
+
+          // Fetch all needed data in parallel
+          const [coproRes, chargesRes, maintenanceRes] = await Promise.all([
+            fetch("http://localhost:7000/copro/", {
+              headers: { Authorization: token },
+            }),
+            fetch("http://localhost:7000/charges/", {
+              headers: { Authorization: token },
+            }),
+            fetch("http://localhost:7000/maintenance/", {
+              headers: { Authorization: token },
+            }),
+          ]);
+
+          if (!coproRes.ok || !chargesRes.ok || !maintenanceRes.ok) {
+            throw new Error("Failed to fetch statistics data");
+          }
+
+          const [copros, charges, maintenances] = await Promise.all([
+            coproRes.json(),
+            chargesRes.json(),
+            maintenanceRes.json(),
+          ]);
+
+          // Process payments data
+          const allPayments = [];
+          charges.forEach((charge) => {
+            if (charge.paiements && charge.paiements.length > 0) {
+              charge.paiements.forEach((payment) => {
+                allPayments.push({
+                  ...payment,
+                  typeCharge: charge.typeCharge,
+                  montant: charge.montant,
+                  idCharge: charge.idCharge,
+                });
               });
-            });
+            }
+          });
+
+          return {
+            copros: copros || [],
+            charges: charges || [],
+            payments: allPayments,
+            maintenances: maintenances || [],
+          };
+        } catch (error) {
+          console.error("Statistics fetch error:", error);
+          showError("Erreur de chargement des données statistiques");
+          return null;
+        }
+      }
+
+      // Calculate unpaid balances from data
+      function calculateUnpaidBalances(data) {
+        const coproBalances = {};
+
+        // Initialize all copropriétaires with zero balance
+        data.copros.forEach((copro) => {
+          coproBalances[copro.email] = {
+            name: copro.nom,
+            balance: 0,
+            lastPayment: null,
+          };
+        });
+
+        // Process charges to calculate balances
+        data.charges.forEach((charge) => {
+          if (charge.statut !== "payé") {
+            const amountDue = charge.montant - (charge.montantPaye || 0);
+
+            if (charge.paiements && charge.paiements.length > 0) {
+              charge.paiements.forEach((payment) => {
+                if (
+                  payment.coproprietaire_email &&
+                  coproBalances[payment.coproprietaire_email]
+                ) {
+                  coproBalances[payment.coproprietaire_email].balance +=
+                    amountDue;
+
+                  // Track last payment date
+                  if (payment.datePaiement) {
+                    const paymentDate = new Date(payment.datePaiement);
+                    if (
+                      !coproBalances[payment.coproprietaire_email]
+                        .lastPayment ||
+                      paymentDate >
+                        new Date(
+                          coproBalances[
+                            payment.coproprietaire_email
+                          ].lastPayment
+                        )
+                    ) {
+                      coproBalances[payment.coproprietaire_email].lastPayment =
+                        payment.datePaiement;
+                    }
+                  }
+                }
+              });
+            }
           }
         });
 
-        return { 
-          copros: copros || [], 
-          charges: charges || [],
-          payments: allPayments,
-          maintenances: maintenances || []
-        };
-      } catch (error) {
-        console.error('Statistics fetch error:', error);
-        showError('Erreur de chargement des données statistiques');
-        return null;
+        // Filter copropriétaires with balance > 0 and sort by balance
+        return Object.values(coproBalances)
+          .filter((copro) => copro.balance > 0)
+          .sort((a, b) => b.balance - a.balance);
       }
-    }
 
-    // Calculate unpaid balances from data
-    function calculateUnpaidBalances(data) {
-      const coproBalances = {};
-      
-      // Initialize all copropriétaires with zero balance
-      data.copros.forEach(copro => {
-        coproBalances[copro.email] = {
-          name: copro.nom,
-          balance: 0,
-          lastPayment: null
-        };
-      });
+      // Show the corresponding report when a button is clicked
+      async function showReport(type) {
+        // Hide all reports
+        const reports = document.querySelectorAll(".rapport-content");
+        reports.forEach((report) => {
+          report.style.display = "none";
+        });
 
-      // Process charges to calculate balances
-      data.charges.forEach(charge => {
-        if (charge.statut !== 'payé') {
-          const amountDue = charge.montant - (charge.montantPaye || 0);
-          
-          if (charge.paiements && charge.paiements.length > 0) {
-            charge.paiements.forEach(payment => {
-              if (payment.coproprietaire_email && coproBalances[payment.coproprietaire_email]) {
-                coproBalances[payment.coproprietaire_email].balance += amountDue;
-                
-                // Track last payment date
-                if (payment.datePaiement) {
-                  const paymentDate = new Date(payment.datePaiement);
-                  if (!coproBalances[payment.coproprietaire_email].lastPayment || 
-                      paymentDate > new Date(coproBalances[payment.coproprietaire_email].lastPayment)) {
-                    coproBalances[payment.coproprietaire_email].lastPayment = payment.datePaiement;
-                  }
-                }
-              }
-            });
+        // Show loading state
+        const reportToShow = document.getElementById(type + "Report");
+        if (reportToShow) {
+          reportToShow.innerHTML = "<p>Chargement des données...</p>";
+          reportToShow.style.display = "block";
+        }
+
+        // Fetch data if needed (might already be loaded from page load)
+        const data = await fetchStatisticsData();
+        if (!data) return;
+
+        // Populate the selected report
+        switch (type) {
+          case "revenu":
+            showRevenueReport(data);
+            break;
+          case "soldes":
+            showBalancesReport(data);
+            break;
+          case "demandes":
+            showMaintenanceReport(data);
+            break;
+        }
+      }
+
+      // Show revenue report
+      function showRevenueReport(data) {
+        const reportElement = document.getElementById("revenuReport");
+
+        // Calculate total revenue
+        const totalRevenue = data.payments.reduce((sum, payment) => {
+          return sum + (payment.montantPaye || payment.montant);
+        }, 0);
+
+        // Group by charge type
+        const revenueByType = {};
+        data.payments.forEach((payment) => {
+          const type = payment.typeCharge || "Autre";
+          if (!revenueByType[type]) {
+            revenueByType[type] = 0;
           }
-        }
-      });
+          revenueByType[type] += payment.montantPaye || payment.montant;
+        });
 
-      // Filter copropriétaires with balance > 0 and sort by balance
-      return Object.values(coproBalances)
-        .filter(copro => copro.balance > 0)
-        .sort((a, b) => b.balance - a.balance);
-    }
-
-    // Show the corresponding report when a button is clicked
-    async function showReport(type) {
-      // Hide all reports
-      const reports = document.querySelectorAll('.rapport-content');
-      reports.forEach(report => {
-        report.style.display = 'none';
-      });
-
-      // Show loading state
-      const reportToShow = document.getElementById(type + 'Report');
-      if (reportToShow) {
-        reportToShow.innerHTML = '<p>Chargement des données...</p>';
-        reportToShow.style.display = 'block';
-      }
-
-      // Fetch data if needed (might already be loaded from page load)
-      const data = await fetchStatisticsData();
-      if (!data) return;
-
-      // Populate the selected report
-      switch(type) {
-        case 'revenu':
-          showRevenueReport(data);
-          break;
-        case 'soldes':
-          showBalancesReport(data);
-          break;
-        case 'demandes':
-          showMaintenanceReport(data);
-          break;
-      }
-    }
-
-    // Show revenue report
-    function showRevenueReport(data) {
-      const reportElement = document.getElementById('revenuReport');
-      
-      // Calculate total revenue
-      const totalRevenue = data.payments.reduce((sum, payment) => {
-        return sum + (payment.montantPaye || payment.montant);
-      }, 0);
-
-      // Group by charge type
-      const revenueByType = {};
-      data.payments.forEach(payment => {
-        const type = payment.typeCharge || 'Autre';
-        if (!revenueByType[type]) {
-          revenueByType[type] = 0;
-        }
-        revenueByType[type] += payment.montantPaye || payment.montant;
-      });
-
-      // Create HTML
-      let html = `
+        // Create HTML
+        let html = `
         <h3>Revenu total collecté</h3>
         <div class="stat-card" style="margin-bottom: 20px;">
           <div class="stat-value">${totalRevenue.toFixed(2)} €</div>
@@ -680,32 +717,32 @@
           <tbody>
       `;
 
-      Object.entries(revenueByType).forEach(([type, amount]) => {
-        const percentage = ((amount / totalRevenue) * 100).toFixed(1);
-        html += `
+        Object.entries(revenueByType).forEach(([type, amount]) => {
+          const percentage = ((amount / totalRevenue) * 100).toFixed(1);
+          html += `
           <tr>
             <td>${type}</td>
             <td>${amount.toFixed(2)} €</td>
             <td>${percentage}%</td>
           </tr>
         `;
-      });
+        });
 
-      html += `
+        html += `
           </tbody>
         </table>
       `;
 
-      reportElement.innerHTML = html;
-    }
+        reportElement.innerHTML = html;
+      }
 
-    // Show balances report
-    function showBalancesReport(data) {
-      const reportElement = document.getElementById('soldesReport');
-      const unpaidCopros = calculateUnpaidBalances(data);
+      // Show balances report
+      function showBalancesReport(data) {
+        const reportElement = document.getElementById("soldesReport");
+        const unpaidCopros = calculateUnpaidBalances(data);
 
-      // Create HTML
-      let html = `
+        // Create HTML
+        let html = `
         <h3>Soldes impayés</h3>
         <table class="stats-table">
           <thead>
@@ -718,68 +755,72 @@
           <tbody>
       `;
 
-      if (unpaidCopros.length === 0) {
-        html += `
+        if (unpaidCopros.length === 0) {
+          html += `
           <tr>
             <td colspan="3" style="text-align: center;">Aucun solde impayé</td>
           </tr>
         `;
-      } else {
-        unpaidCopros.forEach(copro => {
-          html += `
+        } else {
+          unpaidCopros.forEach((copro) => {
+            html += `
             <tr>
               <td>${copro.name}</td>
               <td>${copro.balance.toFixed(2)} €</td>
-              <td>${copro.lastPayment ? new Date(copro.lastPayment).toLocaleDateString('fr-FR') : 'Aucun'}</td>
+              <td>${
+                copro.lastPayment
+                  ? new Date(copro.lastPayment).toLocaleDateString("fr-FR")
+                  : "Aucun"
+              }</td>
             </tr>
           `;
-        });
-      }
+          });
+        }
 
-      html += `
+        html += `
           </tbody>
         </table>
       `;
 
-      reportElement.innerHTML = html;
-      
-      // Update the chart with unpaid balances
-      updateBalanceChart(unpaidCopros);
-    }
+        reportElement.innerHTML = html;
 
-    // Show maintenance report
-    function showMaintenanceReport(data) {
-      const reportElement = document.getElementById('demandesReport');
-      
-      // Group maintenance requests by month and status
-      const maintenanceStats = {};
-      data.maintenances.forEach(request => {
-        const monthYear = new Date(request.date).toLocaleString('fr-FR', { 
-          month: 'short', 
-          year: 'numeric'
+        // Update the chart with unpaid balances
+        updateBalanceChart(unpaidCopros);
+      }
+
+      // Show maintenance report
+      function showMaintenanceReport(data) {
+        const reportElement = document.getElementById("demandesReport");
+
+        // Group maintenance requests by month and status
+        const maintenanceStats = {};
+        data.maintenances.forEach((request) => {
+          const monthYear = new Date(request.date).toLocaleString("fr-FR", {
+            month: "short",
+            year: "numeric",
+          });
+
+          if (!maintenanceStats[monthYear]) {
+            maintenanceStats[monthYear] = {
+              total: 0,
+              resolved: 0,
+            };
+          }
+
+          maintenanceStats[monthYear].total++;
+
+          if (request.statut === "Résolu" || request.statut === "Terminé") {
+            maintenanceStats[monthYear].resolved++;
+          }
         });
-        
-        if (!maintenanceStats[monthYear]) {
-          maintenanceStats[monthYear] = {
-            total: 0,
-            resolved: 0
-          };
-        }
-        
-        maintenanceStats[monthYear].total++;
-        
-        if (request.statut === 'Résolu' || request.statut === 'Terminé') {
-          maintenanceStats[monthYear].resolved++;
-        }
-      });
 
-      // Sort months chronologically
-      const sortedMonths = Object.keys(maintenanceStats).sort((a, b) => {
-        return new Date(a) - new Date(b);
-      });
+        // Sort months chronologically
+        const sortedMonths = Object.keys(maintenanceStats).sort((a, b) => {
+          return new Date(a) - new Date(b);
+        });
 
-      // Create HTML
-      let html = `
+        // Create HTML
+        let html = `
         <h3>Demandes résolues au fil du temps</h3>
         <table class="stats-table">
           <thead>
@@ -793,18 +834,21 @@
           <tbody>
       `;
 
-      if (sortedMonths.length === 0) {
-        html += `
+        if (sortedMonths.length === 0) {
+          html += `
           <tr>
             <td colspan="4" style="text-align: center;">Aucune donnée de maintenance disponible</td>
           </tr>
         `;
-      } else {
-        sortedMonths.forEach(month => {
-          const stats = maintenanceStats[month];
-          const resolutionRate = ((stats.resolved / stats.total) * 100).toFixed(1);
-          
-          html += `
+        } else {
+          sortedMonths.forEach((month) => {
+            const stats = maintenanceStats[month];
+            const resolutionRate = (
+              (stats.resolved / stats.total) *
+              100
+            ).toFixed(1);
+
+            html += `
             <tr>
               <td>${month}</td>
               <td>${stats.total}</td>
@@ -812,203 +856,227 @@
               <td>${resolutionRate}%</td>
             </tr>
           `;
-        });
-      }
+          });
+        }
 
-      html += `
+        html += `
           </tbody>
         </table>
       `;
 
-      reportElement.innerHTML = html;
-    }
-
-    // Update balance chart
-    function updateBalanceChart(unpaidCopros) {
-      const ctx = document.getElementById('balanceChart').getContext('2d');
-      
-      // If chart already exists, destroy it
-      if (window.balanceChart) {
-        window.balanceChart.destroy();
+        reportElement.innerHTML = html;
       }
-      
-      // Prepare data for chart
-      const labels = unpaidCopros.map(copro => copro.name);
-      const data = unpaidCopros.map(copro => copro.balance);
 
-      window.balanceChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: 'Solde Dû (€)',
-            data: data,
-            backgroundColor: 'rgba(42, 82, 152, 0.3)',
-            borderColor: 'rgba(42, 82, 152, 1)',
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: {
-              beginAtZero: true,
-              ticks: {
-                callback: function(value) {
-                  return value + ' €';
-                }
-              }
-            }
+      // Update balance chart
+      function updateBalanceChart(unpaidCopros) {
+        const ctx = document.getElementById("balanceChart").getContext("2d");
+
+        // If chart already exists, destroy it
+        if (window.balanceChart) {
+          window.balanceChart.destroy();
+        }
+
+        // Prepare data for chart
+        const labels = unpaidCopros.map((copro) => copro.name);
+        const data = unpaidCopros.map((copro) => copro.balance);
+
+        window.balanceChart = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: "Solde Dû (€)",
+                data: data,
+                backgroundColor: "rgba(42, 82, 152, 0.3)",
+                borderColor: "rgba(42, 82, 152, 1)",
+                borderWidth: 1,
+              },
+            ],
           },
-          plugins: {
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  return context.dataset.label + ': ' + context.raw.toFixed(2) + ' €';
-                }
-              }
-            }
-          }
-        }
-      });
-    }
-
-    // Function to export the data to CSV/Excel
-    async function exportToCSV() {
-      const data = await fetchStatisticsData();
-      if (!data) return;
-
-      // Get current report type
-      const visibleReport = document.querySelector('.rapport-content[style="display: block;"]');
-      if (!visibleReport) {
-        alert('Veuillez d\'abord afficher un rapport à exporter');
-        return;
+          options: {
+            responsive: true,
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  callback: function (value) {
+                    return value + " €";
+                  },
+                },
+              },
+            },
+            plugins: {
+              tooltip: {
+                callbacks: {
+                  label: function (context) {
+                    return (
+                      context.dataset.label +
+                      ": " +
+                      context.raw.toFixed(2) +
+                      " €"
+                    );
+                  },
+                },
+              },
+            },
+          },
+        });
       }
 
-      let csv = '';
-      const reportId = visibleReport.id;
+      // Function to export the data to CSV/Excel
+      async function exportToCSV() {
+        const data = await fetchStatisticsData();
+        if (!data) return;
 
-      switch(reportId) {
-        case 'revenuReport':
-          // Export revenue data
-          const totalRevenue = data.payments.reduce((sum, payment) => sum + (payment.montantPaye || payment.montant), 0);
-          const revenueByType = {};
-          data.payments.forEach(payment => {
-            const type = payment.typeCharge || 'Autre';
-            revenueByType[type] = (revenueByType[type] || 0) + (payment.montantPaye || payment.montant);
-          });
-
-          csv = "Type de charge,Montant collecté,Pourcentage\n";
-          Object.entries(revenueByType).forEach(([type, amount]) => {
-            const percentage = ((amount / totalRevenue) * 100).toFixed(1);
-            csv += `${type},${amount.toFixed(2)} €,${percentage}%\n`;
-          });
-          break;
-
-        case 'soldesReport':
-          // Export unpaid balances
-          const unpaidCopros = calculateUnpaidBalances(data);
-          
-          csv = "Copropriétaire,Solde Dû,Dernier Paiement\n";
-          unpaidCopros.forEach(copro => {
-            csv += `${copro.name},${copro.balance.toFixed(2)} €,${copro.lastPayment || 'Aucun'}\n`;
-          });
-          break;
-
-        case 'demandesReport':
-          // Export maintenance data
-          const maintenanceStats = {};
-          data.maintenances.forEach(request => {
-            const monthYear = new Date(request.date).toLocaleString('fr-FR', { 
-              month: 'short', 
-              year: 'numeric'
-            });
-            
-            if (!maintenanceStats[monthYear]) {
-              maintenanceStats[monthYear] = {
-                total: 0,
-                resolved: 0
-              };
-            }
-            
-            maintenanceStats[monthYear].total++;
-            
-            if (request.statut === 'Résolu' || request.statut === 'Terminé') {
-              maintenanceStats[monthYear].resolved++;
-            }
-          });
-
-          const sortedMonths = Object.keys(maintenanceStats).sort((a, b) => new Date(a) - new Date(b));
-          
-          csv = "Mois,Demandes totales,Demandes résolues,Taux de résolution\n";
-          sortedMonths.forEach(month => {
-            const stats = maintenanceStats[month];
-            const resolutionRate = ((stats.resolved / stats.total) * 100).toFixed(1);
-            csv += `${month},${stats.total},${stats.resolved},${resolutionRate}%\n`;
-          });
-          break;
-
-        default:
-          alert('Type de rapport non pris en charge pour l\'exportation');
+        // Get current report type
+        const visibleReport = document.querySelector(
+          '.rapport-content[style="display: block;"]'
+        );
+        if (!visibleReport) {
+          alert("Veuillez d'abord afficher un rapport à exporter");
           return;
+        }
+
+        let csv = "";
+        const reportId = visibleReport.id;
+
+        switch (reportId) {
+          case "revenuReport":
+            // Export revenue data
+            const totalRevenue = data.payments.reduce(
+              (sum, payment) => sum + (payment.montantPaye || payment.montant),
+              0
+            );
+            const revenueByType = {};
+            data.payments.forEach((payment) => {
+              const type = payment.typeCharge || "Autre";
+              revenueByType[type] =
+                (revenueByType[type] || 0) +
+                (payment.montantPaye || payment.montant);
+            });
+
+            csv = "Type de charge,Montant collecté,Pourcentage\n";
+            Object.entries(revenueByType).forEach(([type, amount]) => {
+              const percentage = ((amount / totalRevenue) * 100).toFixed(1);
+              csv += `${type},${amount.toFixed(2)} €,${percentage}%\n`;
+            });
+            break;
+
+          case "soldesReport":
+            // Export unpaid balances
+            const unpaidCopros = calculateUnpaidBalances(data);
+
+            csv = "Copropriétaire,Solde Dû,Dernier Paiement\n";
+            unpaidCopros.forEach((copro) => {
+              csv += `${copro.name},${copro.balance.toFixed(2)} €,${
+                copro.lastPayment || "Aucun"
+              }\n`;
+            });
+            break;
+
+          case "demandesReport":
+            // Export maintenance data
+            const maintenanceStats = {};
+            data.maintenances.forEach((request) => {
+              const monthYear = new Date(request.date).toLocaleString("fr-FR", {
+                month: "short",
+                year: "numeric",
+              });
+
+              if (!maintenanceStats[monthYear]) {
+                maintenanceStats[monthYear] = {
+                  total: 0,
+                  resolved: 0,
+                };
+              }
+
+              maintenanceStats[monthYear].total++;
+
+              if (request.statut === "Résolu" || request.statut === "Terminé") {
+                maintenanceStats[monthYear].resolved++;
+              }
+            });
+
+            const sortedMonths = Object.keys(maintenanceStats).sort(
+              (a, b) => new Date(a) - new Date(b)
+            );
+
+            csv =
+              "Mois,Demandes totales,Demandes résolues,Taux de résolution\n";
+            sortedMonths.forEach((month) => {
+              const stats = maintenanceStats[month];
+              const resolutionRate = (
+                (stats.resolved / stats.total) *
+                100
+              ).toFixed(1);
+              csv += `${month},${stats.total},${stats.resolved},${resolutionRate}%\n`;
+            });
+            break;
+
+          default:
+            alert("Type de rapport non pris en charge pour l'exportation");
+            return;
+        }
+
+        const hiddenElement = document.createElement("a");
+        hiddenElement.href = "data:text/csv;charset=utf-8," + encodeURI(csv);
+        hiddenElement.target = "_blank";
+        hiddenElement.download =
+          "rapport_" + reportId.replace("Report", "") + ".csv";
+        hiddenElement.click();
       }
 
-      const hiddenElement = document.createElement('a');
-      hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
-      hiddenElement.target = '_blank';
-      hiddenElement.download = 'rapport_' + reportId.replace('Report', '') + '.csv';
-      hiddenElement.click();
-    }
+      function showError(message) {
+        const errorDiv = document.createElement("div");
+        errorDiv.className = "error-message";
+        errorDiv.textContent = message;
+        document.querySelector(".main-content").prepend(errorDiv);
+      }
 
-    function showError(message) {
-      const errorDiv = document.createElement('div');
-      errorDiv.className = 'error-message';
-      errorDiv.textContent = message;
-      document.querySelector('.main-content').prepend(errorDiv);
-    }
+      // Initialize when DOM is loaded
+      document.addEventListener("DOMContentLoaded", async () => {
+        // Initialize the balance chart with empty data
+        const ctx = document.getElementById("balanceChart").getContext("2d");
+        window.balanceChart = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: ["Chargement..."],
+            datasets: [
+              {
+                label: "Solde Dû (€)",
+                data: [0],
+                backgroundColor: "rgba(42, 82, 152, 0.3)",
+                borderColor: "rgba(42, 82, 152, 1)",
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  callback: function (value) {
+                    return value + " €";
+                  },
+                },
+              },
+            },
+          },
+        });
 
-    // Initialize when DOM is loaded
-    document.addEventListener('DOMContentLoaded', async () => {
-      // Initialize the balance chart with empty data
-      const ctx = document.getElementById('balanceChart').getContext('2d');
-      window.balanceChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: ['Chargement...'],
-          datasets: [{
-            label: 'Solde Dû (€)',
-            data: [0],
-            backgroundColor: 'rgba(42, 82, 152, 0.3)',
-            borderColor: 'rgba(42, 82, 152, 1)',
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: {
-              beginAtZero: true,
-              ticks: {
-                callback: function(value) {
-                  return value + ' €';
-                }
-              }
-            }
-          }
+        // Load data immediately and show the balances report by default
+        const data = await fetchStatisticsData();
+        if (data) {
+          // Show the balances report by default
+          showBalancesReport(data);
+
+          // Also show the balances content section
+          document.getElementById("soldesReport").style.display = "block";
         }
       });
-
-      // Load data immediately and show the balances report by default
-      const data = await fetchStatisticsData();
-      if (data) {
-        // Show the balances report by default
-        showBalancesReport(data);
-        
-        // Also show the balances content section
-        document.getElementById('soldesReport').style.display = 'block';
-      }
-    });
-  </script>
-
-</body>
+    </script>
+  </body>
 </html>
