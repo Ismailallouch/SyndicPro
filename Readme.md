@@ -60,8 +60,6 @@ This application solves real-world problems for property administrators by:
    - Auto-seeding on first run
    - Health-check enabled
 
-## 🚀 Quick Start
-
 ### Prerequisites
 - Docker 20.10+
 - Docker Compose
@@ -70,56 +68,73 @@ This application solves real-world problems for property administrators by:
 
 ### Set Up the Application
 
+SyndicPro provides a complete dockerized environment that simplifies deployment and ensures consistency across different development machines. This installation process will create a fully functional property management system with sample data, ready for immediate use or customization.
+
 1. **Build the containers**:
    ```bash
    docker compose build
    ```
-   *Prepares the Docker images for both backend and database services*
+   *Creates optimized Docker images for both the Node.js backend and PostgreSQL database, ensuring all dependencies are properly configured and isolated*
 
 2. **Initialize the database schema**:
    ```bash
    docker compose run app npx prisma migrate dev --name init
    ```
-   *Applies all database migrations using Prisma*
+   *Establishes the complete database structure using Prisma migrations, creating all necessary tables for co-owners, lots, payments, and maintenance requests with proper relationships and constraints*
 
 3. **Seed sample data**:
    ```bash
    docker compose exec db psql -U postgres -d syndicPro -f seeds/01_seed.sql
    ```
-   *Populates the database with initial test data including admin accounts*
+   *Populates your database with realistic test data including sample co-owners, property lots, payment records, and maintenance requests - perfect for exploring features or demonstrating the system*
 
 4. **Launch the system**:
    ```bash
    docker compose up -d
    ```
-   *Starts all services in detached mode*
+   *Starts all services in detached mode, making your complete property management system accessible via web browser with full API functionality*
 
 ## 🔌 Access the Application
 
-| Component | Access URL | Credentials |
-|-----------|------------|-------------|
-| Backend API | `http://localhost:7000` | JWT Authentication |
-| PostgreSQL DB | `localhost:5432` | User: `postgres`<br>Password: `postgres` |
-| Admin Account | N/A | Username: `user1`<br>Password: `1234` |
+Once installation is complete, SyndicPro provides multiple access points for different user types and development needs. The system is designed to be immediately usable with pre-configured accounts and realistic sample data.
+
+| Component | Access URL | Credentials | Purpose |
+|-----------|------------|-------------|---------|
+| Backend API | `http://localhost:7000` | JWT Authentication | RESTful API for all property management operations |
+| PostgreSQL DB | `localhost:5432` | User: `postgres`<br>Password: `postgres` | Direct database access for advanced queries and maintenance |
+| Admin Account | via Login page | Email: `user1@gmail.com`<br>Password: `123456` | Full system access for property administration |
 
 ## 🔧 Development Commands
 
-```bash
-# Monitor application logs
-docker compose logs -f app
+These commands help you monitor, debug, and maintain your SyndicPro installation during development and production use.
 
-# Access database shell
-docker compose exec db psql -U postgres -d syndicPro
+### System Monitoring & Debugging
 
-# Run Prisma Studio (DB GUI)
-docker compose exec app npx prisma studio
+1. **Monitor application logs**:
+   ```bash
+   docker compose logs -f app
+   ```
+   *Real-time monitoring of backend application logs, essential for debugging API requests, database operations, and system performance issues*
 
-# Rebuild containers
-docker compose build --no-cache
+2. **Access database shell**:
+   ```bash
+   docker compose exec db psql -U postgres -d syndicPro
+   ```
+   *Direct PostgreSQL shell access for running custom queries, examining data integrity, and performing database maintenance tasks*
 
-# Stop and remove everything
-docker compose down -v
-```
+### System Maintenance
+
+4. **Rebuild containers**:
+   ```bash
+   docker compose build --no-cache
+   ```
+   *Forces a complete rebuild of all Docker images from scratch, useful when updating dependencies or troubleshooting container issues*
+
+5. **Stop and remove everything**:
+   ```bash
+   docker compose down -v
+   ```
+   *Completely shuts down all services and removes volumes, effectively resetting your installation to a clean state*
 
 ## 👥 Development Team
 
